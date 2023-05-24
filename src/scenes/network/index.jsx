@@ -5,7 +5,7 @@ import Header from "components/Header";
 import FlexBetween from "components/FlexBetween";
 import { Link } from "react-router-dom";
 
-const AdminRoutes = () => {
+const Network = () => {
   const theme = useTheme();
   // const { data, isLoading } = {};
 
@@ -29,18 +29,18 @@ const AdminRoutes = () => {
 
   const columns = [
     {
-      field: "busNumber",
-      headerName: "Bus Number",
+      field: "terminalNumber",
+      headerName: "Network Number",
       flex: 1,
     },
     {
-      field: "plateNumber",
-      headerName: "Plate Number",
+      field: "terminalName",
+      headerName: "Network Name",
       flex: 1,
     },
     {
-      field: "driverName",
-      headerName: "Driver Name",
+      field: "terminalLocation",
+      headerName: "Network Location",
       flex: 1,
     },
     {
@@ -50,20 +50,15 @@ const AdminRoutes = () => {
       renderCell: (params) => {
         return params.value?.replace(/^(\d{3})(\d{3})(\d{4})/, "($1)$2-$3");
       },
-    },
-    {
-      field: "rating",
-      headerName: "Rating",
-      flex: 0.4,
-    },
+    }
   ];
 
   return (
     <Box m="1.5rem 2.5rem">
       <FlexBetween>
-        <Header title="Routes" subtitle="List Of Routes" />
+        <Header title="Networks" subtitle="List Of Networks" />
         <Box>
-          <Link to="/addroute">
+          <Link to="/addNetwork">
             <Button
               variant="outlined"
               sx={{
@@ -73,7 +68,7 @@ const AdminRoutes = () => {
                 padding: "10px 20px",
               }}
             >
-              Add Route
+              Add Network
             </Button>
           </Link>
         </Box>
@@ -118,4 +113,4 @@ const AdminRoutes = () => {
   );
 };
 
-export default AdminRoutes;
+export default Network;

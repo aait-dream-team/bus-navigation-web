@@ -20,38 +20,14 @@ import {
   SignpostOutlined,
   BusAlertOutlined,
   DashboardOutlined,
-  AddCircleOutlineOutlined,
+  HouseOutlined,
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import FlexBetween from "./FlexBetween";
 
-const navItems = [
-  {
-    text: "AdminRoutes",
-    icon: <RouteOutlined />,
-  },
-  {
-    text: "Terminal",
-    icon: <SignpostOutlined />,
-  },
-  {
-    text: "Report",
-    icon: <BusAlertOutlined />,
-  },
-  {
-    text: "Overview",
-    icon: <DashboardOutlined />,
-  },
-  {
-    text: "SuperAdminRoutes",
-    icon: <RouteOutlined />,
-  },
-  {
-    text: "AddNetwork",
-    icon: <AddCircleOutlineOutlined />,
-  },
-];
+let navItems = [];
 
 const Sidebar = ({
   user,
@@ -64,6 +40,41 @@ const Sidebar = ({
   const [active, setActive] = useState("");
   const navigate = useNavigate();
   const theme = useTheme();
+  const userType = useSelector((state) => state.global.userType);
+
+  if (userType === "admin") {
+    navItems = [
+      {
+        text: "Routes",
+        icon: <RouteOutlined />,
+      },
+      {
+        text: "Terminal",
+        icon: <SignpostOutlined />,
+      },
+      {
+        text: "Report",
+        icon: <BusAlertOutlined />,
+      },
+    ];
+  }
+
+  if (userType === "superadmin") {
+    navItems = [
+      {
+        text: "Overview",
+        icon: <DashboardOutlined />,
+      },
+      {
+        text: "Routes",
+        icon: <RouteOutlined />,
+      },
+      {
+        text: "Network",
+        icon: <HouseOutlined />,
+      },
+    ];
+  }
 
   useEffect(() => {
     setActive(pathname.substring(1));
@@ -92,9 +103,14 @@ const Sidebar = ({
             <Box m="1.5rem 2rem 2rem 3rem">
               <FlexBetween color={theme.palette.secondary.main}>
                 <Box display="flex" alignItems="center" gap="0.5rem">
-                  <Typography variant="h4" fontWeight="bold">
-                    Bus Navigation System
-                  </Typography>
+                  <Link
+                    to="/"
+                    style={{ color: "inherit", textDecoration: "inherit" }}
+                  >
+                    <Typography variant="h4" fontWeight="bold">
+                      Bus Navigation System
+                    </Typography>
+                  </Link>
                 </Box>
                 {!isNonMobile && (
                   <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>

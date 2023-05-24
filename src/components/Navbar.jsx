@@ -7,13 +7,14 @@ import {
   ArrowDropDownOutlined,
 } from "@mui/icons-material";
 import FlexBetween from "components/FlexBetween";
-import { useDispatch } from "react-redux";
-import { setMode } from "state";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setMode, setUserType, setUserId } from "state";
+
 import {
   AppBar,
   Button,
   Box,
-  Typography,
   IconButton,
   InputBase,
   Toolbar,
@@ -26,11 +27,28 @@ import profileImage from "assets/portrait.jpg";
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const navigate = useNavigate();
+  const mode = useSelector((state) => state.global.mode);
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const isOpen = anchorEl || false;
+  const isOpen = anchorEl ? true : false;
   const handleClick = (event) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const logout = () => {
+    dispatch(setUserType(null));
+    dispatch(setUserId(null));
+    localStorage.setItem("userId", null);
+    localStorage.setItem("userType", null);
+
+    if (mode === "light") {
+      dispatch(setMode());
+    }
+    
+    navigate("/", { replace: true });
+  };
 
   return (
     <AppBar sx={{ position: "static", background: "none", boxShadow: "none" }}>
@@ -81,21 +99,6 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                 borderRadius="50%"
                 sx={{ objectFit: "cover" }}
               />
-              <Box textAlign="left">
-                <Typography
-                  fontWeight="bold"
-                  fontSize="0.85rem"
-                  sx={{ color: theme.palette.secondary[100] }}
-                >
-                  {user.name}
-                </Typography>
-                <Typography
-                  fontSize="0.75rem"
-                  sx={{ color: theme.palette.secondary[200] }}
-                >
-                  {user.occupation}
-                </Typography>
-              </Box>
               <ArrowDropDownOutlined
                 sx={{ color: theme.palette.secondary[300], fontSize: "25px" }}
               />
@@ -106,7 +109,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
               onClose={handleClose}
               anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             >
-              <MenuItem onClick={handleClose}>LogOut</MenuItem>
+              <MenuItem onClick={logout}>LogOut</MenuItem>
             </Menu>
           </FlexBetween>
         </FlexBetween>

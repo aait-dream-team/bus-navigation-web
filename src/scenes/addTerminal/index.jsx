@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import { TextField, Button, useTheme, Box, Container } from "@mui/material";
 import Header from "components/Header";
 
-const AddRoutes = () => {
+const AddTerminal = () => {
   const theme = useTheme();
 
-  const [networkName, setNetworkName] = useState("");
-  const [email, setEmail] = useState("");
-  const [description, setDescription] = useState("");
+  const [terminalNumber, setTerminalNumber] = useState("");
+  const [branch, setBranch] = useState("");
+  const [terminalName, setTerminalName] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [latitude, setLatitude] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(networkName, email, description);
+    console.log(terminalName, terminalNumber, branch, longitude, latitude);
     // Handle form submission
   };
 
@@ -34,38 +36,42 @@ const AddRoutes = () => {
         }}
         mb="1rem"
       >
-        <Header title="Add Network" />
+        <Header title="Add Terminal" />
       </Box>
       <form onSubmit={handleSubmit}>
         <Box display="grid" gridTemplateColumns="repeat(1, 1fr)" gap={2}>
           <TextField
-            label="Network Name"
-            value={networkName}
-            onChange={(event) => setNetworkName(event.target.value)}
+            label="Terminal Number"
+            value={terminalNumber}
+            onChange={(event) => setTerminalNumber(event.target.value)}
             required
           />
           <TextField
-            label="Admin Email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            label="Branch"
+            value={branch}
+            onChange={(event) => setBranch(event.target.value)}
             required
           />
           <TextField
-            label="Description"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
+            label="Terminal Name"
+            value={terminalName}
+            onChange={(event) => setTerminalName(event.target.value)}
             required
-            multiline={true}
-            minRows={3}
-            maxRows={10}
+          />
+          <TextField
+            label="Latitude"
+            value={latitude}
+            onChange={(event) => setLatitude(event.target.value)}
+            required
+          />
+          <TextField
+            label="Longitude"
+            value={longitude}
+            onChange={(event) => setLongitude(event.target.value)}
+            required
           />
         </Box>
-        <Box
-          display="grid"
-          justifyContent="center"
-          gap={2}
-          mt="2rem"
-        >
+        <Box display="grid" justifyContent="center" gap={2} mt="2rem">
           <Button
             sx={{
               color: theme.palette.secondary.main,
@@ -85,4 +91,4 @@ const AddRoutes = () => {
   );
 };
 
-export default AddRoutes;
+export default AddTerminal;
