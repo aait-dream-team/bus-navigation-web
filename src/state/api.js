@@ -5,11 +5,17 @@ export const api = createApi({
   reducerPath: "adminApi",
   tagTypes: [],
   endpoints: (build) => ({
-    getUser: build.query({
-      query: (id) => `general/user/${id}`,
-      providesTags: ["User"],
-    }),
+    login: build.mutation({
+      query: (data) => ({
+        url: "api-token-auth/",
+        method: "POST",
+        body: {
+          username: data.username,
+          password: data.password,
+        },
+      }),
+    })
   }),
 });
 
-export const { useGetUserQuery } = api;
+export const { useLoginMutation } = api;

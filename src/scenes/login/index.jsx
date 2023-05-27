@@ -8,113 +8,140 @@ import {
   Typography,
   Container,
   useTheme,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { setUserType } from "state";
+import { useLoginMutation } from "state/api";
 
 const Login = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [trigger, result] = useLoginMutation();
+
+  const [open, setOpen] = useState(false); // snackbar state
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
+    setUsername(name === "username" ? value : username);
+    setPassword(name === "password" ? value : password);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // Handle form submission here
-    console.log(formData);
-    dispatch(setUserType("admin"));
-    // dispatch(setUserType("superadmin"));
-    navigate("/", { replace: true });
+    let data = undefined;
+    try {
+      data = await trigger({ username, password }).unwrap();
+      if (data?.user_type === "sys-admin") {
+        dispatch(setUserType("superadmin"));
+        navigate("/", { replace: true });
+      }
+
+      if (data?.user_type === "admin") {
+        dispatch(setUserType("admin"));
+        navigate("/", { replace: true });
+      }
+    } catch (e) {
+      setOpen(true);
+    }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh",
-      }}
-    >
-      <Grid
-        container
-        spacing={2}
-        justifyContent="center"
-        p="1.5rem"
-        sx={{ boxShadow: "rgba(255, 255, 255, 0.35) 0px 5px 15px" }}
+    <>
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+        }}
       >
-        <Grid item xs={12}>
-          <Typography
-            variant="h4"
-            align="center"
-            gutterBottom
-            color={theme.palette.secondary.main}
-          >
-            Login
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            label="Email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            margin="normal"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            label="Password"
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleInputChange}
-            fullWidth
-            required
-            margin="normal"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Container
-            maxWidth="sm"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Button
-              variant="outlined"
-              type="submit"
-              onClick={handleSubmit}
-              sx={{
-                color: theme.palette.secondary.main,
-                fontSize: "14px",
-                fontWeight: "bold",
-                padding: "10px 20px",
-              }}
+        <Grid
+          container
+          spacing={2}
+          justifyContent="center"
+          p="1.5rem"
+          sx={{ boxShadow: "rgba(255, 255, 255, 0.35) 0px 5px 15px" }}
+        >
+          <Grid item xs={12}>
+            <Typography
+              variant="h4"
+              align="center"
+              gutterBottom
+              color={theme.palette.secondary.main}
             >
               Login
-            </Button>
-          </Container>
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Username"
+              name="username"
+              type="username"
+              value={username}
+              onChange={handleInputChange}
+              fullWidth
+              required
+              margin="normal"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Password"
+              name="password"
+              type="password"
+              value={password}
+              onChange={handleInputChange}
+              fullWidth
+              required
+              margin="normal"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Container
+              maxWidth="sm"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Button
+                variant="outlined"
+                type="submit"
+                onClick={handleSubmit}
+                sx={{
+                  color: theme.palette.secondary.main,
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  padding: "10px 20px",
+                }}
+              >
+                Login
+              </Button>
+            </Container>
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          Username or Password is Incorrect!
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 

@@ -29,7 +29,6 @@ function App() {
     // Retrieve data from local storage
     const localUserId = localStorage.getItem("userId");
     const localUserType = localStorage.getItem("userType");
-    console.log(localUserId, localUserType)
 
     // If data exists in local storage, set it as component state
     if (localUserId !== 'null' && localUserId !== userId) {
