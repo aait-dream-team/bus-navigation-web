@@ -1,60 +1,52 @@
 import React from "react";
-import { Box, useTheme, Button } from "@mui/material";
+import {
+  Box,
+  useTheme,
+  Button,
+  CircularProgress,
+  Container,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Header from "components/Header";
 import FlexBetween from "components/FlexBetween";
 import { Link } from "react-router-dom";
+import { useListOfRoutesQuery } from "state/api";
 
 const AdminRoutes = () => {
   const theme = useTheme();
-  // const { data, isLoading } = {};
-
-  const data = [
-    {
-      busNumber: "1",
-      plateNumber: "ABC-123",
-      driverName: "John Doe",
-      dateAdded: "2021-10-10",
-      rating: "4.5",
-    },
-    {
-      busNumber: "2",
-      plateNumber: "ABC-123",
-      driverName: "John Doe",
-
-      dateAdded: "2021-10-10",
-      rating: "4.5",
-    },
-  ];
+  const { data, isLoading } = useListOfRoutesQuery();
+  console.log(data, isLoading);
 
   const columns = [
     {
-      field: "busNumber",
-      headerName: "Bus Number",
+      field: "id",
+      headerName: "ID",
       flex: 1,
     },
     {
-      field: "plateNumber",
-      headerName: "Plate Number",
+      field: "route_short_name",
+      headerName: "Route Short Name",
       flex: 1,
     },
     {
-      field: "driverName",
-      headerName: "Driver Name",
+      field: "agency_id",
+      headerName: "Agency ID",
       flex: 1,
     },
     {
-      field: "dateAdded",
-      headerName: "Date Added",
+      field: "route_color",
+      headerName: "Route Color",
       flex: 1,
-      renderCell: (params) => {
-        return params.value?.replace(/^(\d{3})(\d{3})(\d{4})/, "($1)$2-$3");
-      },
     },
     {
-      field: "rating",
-      headerName: "Rating",
-      flex: 0.4,
+      field: "route_desc",
+      headerName: "Route Desc",
+      flex: 1,
+    },
+    {
+      field: "route_type",
+      headerName: "Route Type",
+      flex: 1,
     },
   ];
 
@@ -106,13 +98,26 @@ const AdminRoutes = () => {
           },
         }}
       >
-        <DataGrid
-          // loading={isLoading || !data}
-          getRowId={(row) => row.busNumber}
-          rows={data || []}
-          columns={columns}
-        />
-        {/* <DataGrid loading={true} rows={[]} columns={columns} /> */}
+        {isLoading ? (
+          <Container
+            maxWidth="sm"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "inherit",
+            }}
+          >
+            <CircularProgress />
+          </Container>
+        ) : (
+          <DataGrid
+            loading={isLoading}
+            getRowId={(row) => row.id}
+            rows={data}
+            columns={columns}
+          />
+        )}
       </Box>
     </Box>
   );

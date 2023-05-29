@@ -11,7 +11,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { setUserType } from "state";
+import { setUserId, setUserType } from "state";
 import { useLoginMutation } from "state/api";
 
 const Login = () => {
@@ -37,12 +37,13 @@ const Login = () => {
     let data = undefined;
     try {
       data = await trigger({ username, password }).unwrap();
+      
+      dispatch(setUserId(data?.user_id));
+
       if (data?.user_type === "sys-admin") {
         dispatch(setUserType("superadmin"));
         navigate("/", { replace: true });
-      }
-
-      if (data?.user_type === "admin") {
+      } else {
         dispatch(setUserType("admin"));
         navigate("/", { replace: true });
       }

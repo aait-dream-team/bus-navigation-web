@@ -1,56 +1,41 @@
 import React from "react";
-import { Box, useTheme, Button } from "@mui/material";
+import { Box, useTheme, Button, CircularProgress, Container } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Header from "components/Header";
 import FlexBetween from "components/FlexBetween";
 import { Link } from "react-router-dom";
+import { useListOfTerminalsQuery } from "state/api";
 
 const Terminal = () => {
   const theme = useTheme();
-  // const { data, isLoading } = {};
-
-  const data = [
-    {
-      busNumber: "1",
-      plateNumber: "ABC-123",
-      driverName: "John Doe",
-      dateAdded: "2021-10-10",
-      rating: "4.5",
-    },
-    {
-      busNumber: "2",
-      plateNumber: "ABC-123",
-      driverName: "John Doe",
-
-      dateAdded: "2021-10-10",
-      rating: "4.5",
-    },
-  ];
+  const { data, isLoading } = useListOfTerminalsQuery();
 
   const columns = [
     {
-      field: "terminalNumber",
-      headerName: "Terminal Number",
+      field: "stop_code",
+      headerName: "Terminal Code",
       flex: 1,
     },
     {
-      field: "terminalName",
+      field: "stop_name",
       headerName: "Terminal Name",
       flex: 1,
     },
     {
-      field: "terminalLocation",
-      headerName: "Terminal Location",
+      field: "stop_desc",
+      headerName: "Terminal Description",
       flex: 1,
     },
     {
-      field: "dateAdded",
-      headerName: "Date Added",
+      field: "stop_lat",
+      headerName: "Latitude",
       flex: 1,
-      renderCell: (params) => {
-        return params.value?.replace(/^(\d{3})(\d{3})(\d{4})/, "($1)$2-$3");
-      },
-    }
+    },
+    {
+      field: "stop_long",
+      headerName: "Longitude",
+      flex: 1,
+    },
   ];
 
   return (
@@ -101,13 +86,26 @@ const Terminal = () => {
           },
         }}
       >
-        <DataGrid
-          // loading={isLoading || !data}
-          getRowId={(row) => row.busNumber}
-          rows={data || []}
-          columns={columns}
-        />
-        {/* <DataGrid loading={true} rows={[]} columns={columns} /> */}
+        {isLoading ? (
+          <Container
+            maxWidth="sm"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "inherit",
+            }}
+          >
+            <CircularProgress />
+          </Container>
+        ) : (
+          <DataGrid
+            loading={isLoading}
+            getRowId={(row) => row.stop_code}
+            rows={data}
+            columns={columns}
+          />
+        )}
       </Box>
     </Box>
   );
