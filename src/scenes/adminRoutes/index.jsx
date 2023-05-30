@@ -72,6 +72,7 @@ const AdminRoutes = () => {
       </FlexBetween>
       <Box
         mt="40px"
+        width="82vw"
         height="75vh"
         sx={{
           "& .MuiDataGrid-root": {
@@ -87,6 +88,7 @@ const AdminRoutes = () => {
           },
           "& .MuiDataGrid-virtualScroller": {
             backgroundColor: theme.palette.primary.light,
+            overflow: "hidden",
           },
           "& .MuiDataGrid-footerContainer": {
             backgroundColor: theme.palette.background.alt,

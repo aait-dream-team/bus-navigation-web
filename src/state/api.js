@@ -1,7 +1,23 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_SERVER_URL }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: process.env.REACT_APP_SERVER_URL,
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  }),
+  // prepareHeaders: (headers, { getState }) => {
+  //   const token = getState().global.token;
+
+  //   // If we have a token set in state, let's assume that we should be passing it.
+  //   if (token) {
+  //     headers.set("authorization", `Bearer ${token}`);
+  //     console.log("Token: ",token)
+  //   }
+
+  //   return headers;
+  // },
   reducerPath: "adminApi",
   tagTypes: [],
   keepUnusedDataFor: 1,
@@ -35,6 +51,13 @@ export const api = createApi({
         method: "GET",
       }),
     }),
+    createAgency: build.mutation({
+      query: (data) => ({
+        url: "agencies/",
+        method: "POST",
+        body: data,
+      }),
+    }),
     listOfTerminals: build.query({
       query: () => ({
         url: "stops/",
@@ -58,4 +81,5 @@ export const {
   useListOfAgenciesQuery,
   useCreateRouteMutation,
   useCreateTerminalMutation,
+  useCreateAgencyMutation,
 } = api;

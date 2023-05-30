@@ -4,6 +4,7 @@ const initialState = {
   mode: "dark",
   userId: null,
   userType: null,
+  token : null
 };
 
 export const globalSlice = createSlice({
@@ -18,10 +19,12 @@ export const globalSlice = createSlice({
     },
     setUserId: (state, action) => {
       state.userId = action.payload
+    }, setToken: (state, action) => {
+      state.token = action.payload
     }
   },
 });
 
-export const { setMode, setUserType, setUserId } = globalSlice.actions;
+export const { setMode, setUserType, setUserId, setToken } = globalSlice.actions;
 
 export default globalSlice.reducer;

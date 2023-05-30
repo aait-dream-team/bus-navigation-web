@@ -9,7 +9,7 @@ import {
 import FlexBetween from "components/FlexBetween";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setMode, setUserType, setUserId } from "state";
+import { setMode, setUserType, setUserId, setToken } from "state";
 
 import {
   AppBar,
@@ -40,8 +40,11 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const logout = () => {
     dispatch(setUserType(null));
     dispatch(setUserId(null));
+    dispatch(setToken(null));
+    
     localStorage.setItem("userId", null);
     localStorage.setItem("userType", null);
+    localStorage.setItem("token", null);
 
     if (mode === "light") {
       dispatch(setMode());
@@ -58,17 +61,6 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
           <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
             <MenuIcon />
           </IconButton>
-          <FlexBetween
-            backgroundColor={theme.palette.background.alt}
-            borderRadius="9px"
-            gap="3rem"
-            p="0.1rem 1.5rem"
-          >
-            <InputBase placeholder="Search" />
-            <IconButton>
-              <Search />
-            </IconButton>
-          </FlexBetween>
         </FlexBetween>
         {/* RIGHT SIDE */}
         <FlexBetween gap="1.5rem">

@@ -16,12 +16,13 @@ import AddRoute from "scenes/addRoute";
 import AddTerminal from "scenes/addTerminal";
 import Network from "scenes/network";
 import Login from "scenes/login";
-import { setUserType, setUserId } from "state";
+import { setUserType, setUserId, setToken } from "state";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
   const userType = useSelector((state) => state.global.userType);
   const userId = useSelector((state) => state.global.userId);
+  const token = useSelector((state) => state.global.token);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   const dispatch = useDispatch();
 
@@ -29,6 +30,7 @@ function App() {
     // Retrieve data from local storage
     const localUserId = localStorage.getItem("userId");
     const localUserType = localStorage.getItem("userType");
+    const localToken = localStorage.getItem("token");
 
     // If data exists in local storage, set it as component state
     if (localUserId !== 'null' && localUserId !== userId) {
@@ -38,13 +40,18 @@ function App() {
     if (localUserType !== 'null' && localUserType !== userType) {
       dispatch(setUserType(localUserType));
     }
+
+    if (localToken !== 'null' && localToken !== token) {
+      dispatch(setToken(localToken));
+    }
   });
 
   useEffect(() => {
     // Save data to local storage whenever it changes
     localStorage.setItem("userId", userId);
     localStorage.setItem("userType", userType);
-  }, [userId, userType]);
+    localStorage.setItem("token", token);
+  }, [userId, userType, token]);
 
   return (
     <div className="app">
