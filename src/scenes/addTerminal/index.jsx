@@ -30,16 +30,6 @@ const AddTerminal = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(
-      stopName,
-      stopDesc,
-      stopLat,
-      stopLong,
-      stopCode,
-      stopUrl,
-      locationType,
-      localStorage.getItem("userId")
-    );
     // Handle form submission
     let data = undefined;
     try {

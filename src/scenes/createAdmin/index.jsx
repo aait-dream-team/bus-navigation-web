@@ -31,7 +31,6 @@ const CreateAdmin = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     // Handle form submission
-    console.log(username, userType);
     let data = undefined;
     try {
       data = await trigger({

@@ -10,8 +10,6 @@ const Network = () => {
   const theme = useTheme();
   const { data, isLoading } = useListOfAgenciesQuery();
 
-  console.log(data);
-
   // const data = [
   //   {
   //     busNumber: "1",

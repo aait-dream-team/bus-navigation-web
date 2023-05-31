@@ -15,7 +15,6 @@ import { useListOfRoutesQuery } from "state/api";
 const AdminRoutes = () => {
   const theme = useTheme();
   const { data, isLoading } = useListOfRoutesQuery();
-  console.log(data, isLoading);
 
   const columns = [
     {

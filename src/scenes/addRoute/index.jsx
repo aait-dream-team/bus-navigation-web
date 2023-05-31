@@ -28,14 +28,6 @@ const AddRoute = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(
-      routeShortName,
-      routeLongName,
-      routeDesc,
-      routeType,
-      routeColor,
-      agency
-    );
     // Handle form submission
     let data = undefined;
     try {
