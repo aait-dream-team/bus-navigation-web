@@ -20,27 +20,46 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const [username, setUsername] = useState("");
+  const [usernameError, setUsernameError] = useState(false);
   const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
   const [trigger, result] = useLoginMutation();
 
   const [open, setOpen] = useState(false); // snackbar state
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setUsername(name === "username" ? value : username);
-    setPassword(name === "password" ? value : password);
+    if (name === "username") {
+      setUsername(value);
+      setUsernameError(false);
+    }
+    if (name === "password") {
+      setPassword(value);
+      setPasswordError(false);
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     // Handle form submission here
+    event.preventDefault();
+    // Input validation
+    if (username === "") {
+      setUsernameError(true);
+      return;
+    }
+    if (password === "") {
+      setPasswordError(true);
+      return;
+    }
+
     let data = undefined;
     try {
       data = await trigger({ username, password }).unwrap();
-      
+
       dispatch(setUserId(data?.user_id));
       dispatch(setToken(data?.token));
-      
+
       if (data?.user_type === "sys-admin") {
         dispatch(setUserType("superadmin"));
         navigate("/", { replace: true });
@@ -77,6 +96,7 @@ const Login = () => {
           justifyContent="center"
           p="1.5rem"
           sx={{ boxShadow: "rgba(255, 255, 255, 0.35) 0px 5px 15px" }}
+          borderRadius="10px"
         >
           <Grid item xs={12}>
             <Typography
@@ -85,7 +105,7 @@ const Login = () => {
               gutterBottom
               color={theme.palette.secondary.main}
             >
-              Login
+              Bus Navigation System
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -98,6 +118,8 @@ const Login = () => {
               fullWidth
               required
               margin="normal"
+              error={usernameError}
+              helperText={usernameError ? "Username is required" : ""}
             />
           </Grid>
           <Grid item xs={12}>
@@ -110,6 +132,8 @@ const Login = () => {
               fullWidth
               required
               margin="normal"
+              error={passwordError}
+              helperText={passwordError ? "Password is required" : ""}
             />
           </Grid>
           <Grid item xs={12}>
