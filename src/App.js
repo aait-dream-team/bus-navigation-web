@@ -9,9 +9,9 @@ import AdminRoutes from "scenes/adminRoutes";
 import Terminal from "scenes/terminal";
 import Report from "scenes/report";
 import Settings from "scenes/settings";
-import AddNetwork from "scenes/addNetwork";
 import Overview from "scenes/overview";
 import SuperadminRoutes from "scenes/superadminRoutes";
+import CreateAdmin from "scenes/createAdmin";
 import AddRoute from "scenes/addRoute";
 import AddTerminal from "scenes/addTerminal";
 import Network from "scenes/network";
@@ -100,8 +100,8 @@ function App() {
               {userType === "superadmin" && (
                 <>
                   <Route path="/overview" element={<Overview />} />
-                  <Route path="/addNetwork" element={<AddNetwork />} />
                   <Route path="/network" element={<Network />} />
+                  <Route path="/createAdmin" element={<CreateAdmin />} />
                 </>
               )}
             </Route>

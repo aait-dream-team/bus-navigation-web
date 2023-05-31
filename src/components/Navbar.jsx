@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import profileImage from "assets/portrait.jpg";
 
-const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
+const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate();

@@ -21,6 +21,7 @@ import {
   BusAlertOutlined,
   DashboardOutlined,
   HouseOutlined,
+  ControlPointOutlined,
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
@@ -30,7 +31,6 @@ import FlexBetween from "./FlexBetween";
 let navItems = [];
 
 const Sidebar = ({
-  user,
   drawerWidth,
   isSidebarOpen,
   setIsSidebarOpen,
@@ -72,6 +72,10 @@ const Sidebar = ({
       {
         text: "Network",
         icon: <HouseOutlined />,
+      },
+      {
+        text: "CreateAdmin",
+        icon: <ControlPointOutlined />,
       },
     ];
   }

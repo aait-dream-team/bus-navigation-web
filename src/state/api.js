@@ -75,6 +75,16 @@ export const api = createApi({
         },
       }),
     }),
+    createAdmin: build.mutation({
+      query: (data) => ({
+        url: "admins/create/",
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -86,4 +96,5 @@ export const {
   useCreateRouteMutation,
   useCreateTerminalMutation,
   useCreateAgencyMutation,
+  useCreateAdminMutation,
 } = api;

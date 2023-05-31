@@ -67,7 +67,7 @@ const Network = () => {
     <Box m="1.5rem 2.5rem">
       <FlexBetween>
         <Header title="Networks" subtitle="List Of Networks" />
-        <Box>
+        {/* <Box>
           <Link to="/addNetwork">
             <Button
               variant="outlined"
@@ -81,7 +81,7 @@ const Network = () => {
               Add Network
             </Button>
           </Link>
-        </Box>
+        </Box> */}
       </FlexBetween>
       <Box
         mt="40px"
