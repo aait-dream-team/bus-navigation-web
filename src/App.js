@@ -81,7 +81,7 @@ function App() {
                     <AdminRoutes />
                   ) : userType === "superadmin" ? (
                     <SuperadminRoutes />
-                  ) : null
+                  ) : <Navigate to="/login" replace />
                 }
               />
               <Route path="/settings" element={<Settings />} />

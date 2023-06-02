@@ -17,25 +17,77 @@ const AddRoute = () => {
   const navigate = useNavigate();
 
   const [routeShortName, setRouteShortName] = useState("");
+  const [routeShortNameError, setRouteShortNameError] = useState(false);
   const [routeLongName, setRouteLongName] = useState("");
+  const [routeLongNameError, setRouteLongNameError] = useState(false);
   const [routeDesc, setRouteDesc] = useState("");
-  const [routeType, setRouteType] = useState("");
+  const [routeDescError, setRouteDescError] = useState(false);
   const [routeColor, setRouteColor] = useState("");
+  const [routeColorError, setRouteColorError] = useState(false);
   const [agency, setAgency] = useState("");
+  const [agencyError, setAgencyError] = useState(false);
+
   const [open, setOpen] = useState(false); // snackbar state
 
   const [trigger, result] = useCreateRouteMutation();
 
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    if (name === "routeShortName") {
+      setRouteShortName(value);
+      setRouteShortNameError(false);
+    }
+    if (name === "routeLongName") {
+      setRouteLongName(value);
+      setRouteLongNameError(false);
+    }
+    if (name === "routeDesc") {
+      setRouteDesc(value);
+      setRouteDescError(false);
+    }
+    if (name === "routeColor") {
+      setRouteColor(value);
+      setRouteColorError(false);
+    }
+    if (name === "agency") {
+      setAgency(value);
+      setAgencyError(false);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     // Handle form submission
+
+    if (routeShortName === "") {
+      setRouteShortNameError(true);
+      return;
+    }
+    if (routeLongName === "") {
+      setRouteLongNameError(true);
+      return;
+    }
+    if (routeDesc === "") {
+      setRouteDescError(true);
+      return;
+    }
+    if (routeColor === "") {
+      setRouteColorError(true);
+      return;
+    }
+    if (agency === "") {
+      setAgencyError(true);
+      return;
+    }
+
+
     let data = undefined;
     try {
       data = await trigger({
         route_short_name: routeShortName,
         route_long_name: routeLongName,
         route_desc: routeDesc,
-        route_type: routeType,
+        route_type: "car",
         route_color: routeColor,
         agency: agency,
       }).unwrap();
@@ -78,42 +130,51 @@ const AddRoute = () => {
           <Box display="grid" gridTemplateColumns="repeat(1, 1fr)" gap={2}>
             <TextField
               label="Route Short Name"
+              name="routeShortName"
               value={routeShortName}
-              onChange={(event) => setRouteShortName(event.target.value)}
+              onChange={handleInputChange}
               required
+              error={routeShortNameError}
+              helperText={routeShortNameError ? "Route short name is required" : ""}
             />
             <TextField
               label="Route Long Name"
+              name="routeLongName"
               value={routeLongName}
-              onChange={(event) => setRouteLongName(event.target.value)}
+              onChange={handleInputChange}
               required
+              error={routeLongNameError}
+              helperText={routeLongNameError ? "Route long name is required" : ""}
             />
             <TextField
               label="Route Description"
+              name="routeDesc"
               value={routeDesc}
-              onChange={(event) => setRouteDesc(event.target.value)}
+              onChange={handleInputChange}
               required
               multiline={true}
               minRows={3}
               maxRows={10}
-            />
-            <TextField
-              label="Route Type"
-              value={routeType}
-              onChange={(event) => setRouteType(event.target.value)}
-              required
+              error={routeDescError}
+              helperText={routeDescError ? "Route description is required" : ""}
             />
             <TextField
               label="Route Color"
+              name="routeColor"
               value={routeColor}
-              onChange={(event) => setRouteColor(event.target.value)}
+              onChange={handleInputChange}
               required
+              error={routeColorError}
+              helperText={routeColorError ? "Route color is required" : ""}
             />
             <TextField
               label="Agency ID"
+              name="agency"
               value={agency}
-              onChange={(event) => setAgency(event.target.value)}
+              onChange={handleInputChange}
               required
+              error={agencyError}
+              helperText={agencyError ? "Agency ID is required" : ""}
             />
           </Box>
           <Container

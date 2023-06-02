@@ -17,20 +17,77 @@ const AddTerminal = () => {
   const navigate = useNavigate();
 
   const [stopName, setStopName] = useState("");
+  const [stopNameError, setStopNameError] = useState(false);
   const [stopDesc, setStopDesc] = useState("");
+  const [stopDescError, setStopDescError] = useState(false);
   const [stopLat, setStopLat] = useState("");
+  const [stopLatError, setStopLatError] = useState(false);
   const [stopLong, setStopLong] = useState("");
+  const [stopLongError, setStopLongError] = useState(false);
   const [stopCode, setStopCode] = useState("");
+  const [stopCodeError, setStopCodeError] = useState(false);
   const [stopUrl, setStopUrl] = useState("");
+  const [stopUrlError, setStopUrlError] = useState(false);
   const [locationType, setLocationType] = useState("dkn");
 
   const [open, setOpen] = useState(false); // snackbar state
 
   const [trigger, result] = useCreateTerminalMutation();
 
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    if (name === "stopName") {
+      setStopName(value);
+      setStopNameError(false);
+    }
+    if (name === "stopDesc") {
+      setStopDesc(value);
+      setStopDescError(false);
+    }
+    if (name === "stopLat") {
+      setStopLat(value);
+      setStopLatError(false);
+    }
+    if (name === "stopLong") {
+      setStopLong(value);
+      setStopLongError(false);
+    }
+    if (name === "stopCode") {
+      setStopCode(value);
+      setStopCodeError(false);
+    }
+    if (name === "stopUrl") {
+      setStopUrl(value);
+      setStopUrlError(false);
+    }
+  };
+
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    // Handle form submission
+    if (stopName === "") {
+      setStopNameError(true);
+      return;
+    }
+    if (stopDesc === "") {
+      setStopDescError(true);
+      return;
+    }
+    if (stopUrl === "" || !stopUrl.match(new RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi))) {
+      setStopUrlError(true);
+      return;
+    }
+    if (stopCode === "") {
+      setStopCodeError(true);
+      return;
+    }
+    if (stopLat === "") {
+      setStopLatError(true);
+      return;
+    }
+    if (stopLong === "") {
+      setStopLongError(true);
+      return;
+    }
+
     let data = undefined;
     try {
       data = await trigger({
@@ -82,42 +139,62 @@ const AddTerminal = () => {
           <Box display="grid" gridTemplateColumns="repeat(1, 1fr)" gap={2}>
             <TextField
               label="Terminal Name"
+              name="stopName"
               value={stopName}
-              onChange={(event) => setStopName(event.target.value)}
+              onChange={handleInputChange}
               required
+              error={stopNameError}
+              helperText={stopNameError ? "Terminal name is required" : ""}
             />
             <TextField
               label="Terminal Description"
               value={stopDesc}
-              onChange={(event) => setStopDesc(event.target.value)}
+              name="stopDesc"
+              onChange={handleInputChange}
               required
               multiline={true}
               minRows={3}
               maxRows={10}
+              error={stopDescError}
+              helperText={
+                stopDescError ? "Terminal description is required" : ""
+              }
             />
             <TextField
               label="Terminal URL"
+              name="stopUrl"
               value={stopUrl}
-              onChange={(event) => setStopUrl(event.target.value)}
+              onChange={handleInputChange}
               required
+              error={stopUrlError}
+              helperText={stopUrlError ? "Invalid Terminal URL" : ""}
             />
             <TextField
               label="Terminal Code"
+              name="stopCode"
               value={stopCode}
-              onChange={(event) => setStopCode(event.target.value)}
+              onChange={handleInputChange}
               required
+              error={stopCodeError}
+              helperText={stopCodeError ? "Terminal code is required" : ""}
             />
             <TextField
               label="Latitude"
+              name="stopLat"
               value={stopLat}
-              onChange={(event) => setStopLat(event.target.value)}
+              onChange={handleInputChange}
               required
+              error={stopLatError}
+              helperText={stopLatError ? "Terminal latitude is required" : ""}
             />
             <TextField
               label="Longitude"
+              name="stopLong"
               value={stopLong}
-              onChange={(event) => setStopLong(event.target.value)}
+              onChange={handleInputChange}
               required
+              error={stopLongError}
+              helperText={stopLongError ? "Terminal longitude is required" : ""}
             />
           </Box>
           <Box display="grid" justifyContent="center" gap={2} mt="2rem">

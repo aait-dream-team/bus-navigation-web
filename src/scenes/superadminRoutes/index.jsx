@@ -100,7 +100,7 @@ const SuperAdminRoutes = () => {
           <DataGrid
             loading={isLoading}
             getRowId={(row) => row.id}
-            rows={data}
+            rows={data || []}
             columns={columns}
           />
         )}

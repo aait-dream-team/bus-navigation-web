@@ -1,5 +1,11 @@
 import React from "react";
-import { Box, useTheme, Button, Container, CircularProgress } from "@mui/material";
+import {
+  Box,
+  useTheme,
+  Button,
+  Container,
+  CircularProgress,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Header from "components/Header";
 import FlexBetween from "components/FlexBetween";
@@ -58,28 +64,13 @@ const Network = () => {
       field: "phone",
       headerName: "Phone",
       flex: 1,
-    }
+    },
   ];
 
   return (
     <Box m="1.5rem 2.5rem">
       <FlexBetween>
         <Header title="Networks" subtitle="List Of Networks" />
-        {/* <Box>
-          <Link to="/addNetwork">
-            <Button
-              variant="outlined"
-              sx={{
-                color: theme.palette.secondary.main,
-                fontSize: "14px",
-                fontWeight: "bold",
-                padding: "10px 20px",
-              }}
-            >
-              Add Network
-            </Button>
-          </Link>
-        </Box> */}
       </FlexBetween>
       <Box
         mt="40px"
@@ -124,12 +115,12 @@ const Network = () => {
             <CircularProgress />
           </Container>
         ) : (
-        <DataGrid
-          loading={isLoading || !data}
-          getRowId={(row) => row.id}
-          rows={data || []}
-          columns={columns}
-        />
+          <DataGrid
+            loading={isLoading || !data}
+            getRowId={(row) => row.id}
+            rows={data || []}
+            columns={columns}
+          />
         )}
       </Box>
     </Box>

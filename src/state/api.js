@@ -85,6 +85,16 @@ export const api = createApi({
         },
       }),
     }),
+    createReport: build.mutation({
+      query: (data) => ({
+        url: "alerts/",
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -97,4 +107,5 @@ export const {
   useCreateTerminalMutation,
   useCreateAgencyMutation,
   useCreateAdminMutation,
+  useCreateReportMutation,
 } = api;
