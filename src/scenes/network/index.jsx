@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   useTheme,
@@ -10,29 +10,17 @@ import { DataGrid } from "@mui/x-data-grid";
 import Header from "components/Header";
 import FlexBetween from "components/FlexBetween";
 import { Link } from "react-router-dom";
-import { useListOfAgenciesQuery } from "state/api";
+import { useListOfAgenciesQuery, useDeleteAgencyMutation } from "state/api";
 
 const Network = () => {
   const theme = useTheme();
   const { data, isLoading } = useListOfAgenciesQuery();
+  const [deleteNetworkTrigger, result] = useDeleteAgencyMutation();
+  const [rows, setRows] = useState([]);
 
-  // const data = [
-  //   {
-  //     busNumber: "1",
-  //     plateNumber: "ABC-123",
-  //     driverName: "John Doe",
-  //     dateAdded: "2021-10-10",
-  //     rating: "4.5",
-  //   },
-  //   {
-  //     busNumber: "2",
-  //     plateNumber: "ABC-123",
-  //     driverName: "John Doe",
-
-  //     dateAdded: "2021-10-10",
-  //     rating: "4.5",
-  //   },
-  // ];
+  useEffect(() => {
+    setRows(data || []);
+  }, [data]);
 
   const columns = [
     {
@@ -64,6 +52,31 @@ const Network = () => {
       field: "phone",
       headerName: "Phone",
       flex: 1,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+      renderCell: (params) => (
+        <Box>
+          <Button
+            variant="outlined"
+            sx={{
+              color: "red",
+              fontSize: "14px",
+              fontWeight: "bold",
+              borderColor: "red",
+            }}
+            size="small"
+            onClick={(item) => {
+              deleteNetworkTrigger({ id: params.id });
+              setRows(data.filter((obj) => obj.id !== params.id));
+            }}
+          >
+            Delete
+          </Button>
+        </Box>
+      ),
     },
   ];
 
@@ -118,7 +131,7 @@ const Network = () => {
           <DataGrid
             loading={isLoading || !data}
             getRowId={(row) => row.id}
-            rows={data || []}
+            rows={rows || []}
             columns={columns}
           />
         )}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
   Box,
   useTheme,
@@ -9,12 +9,19 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import Header from "components/Header";
 import FlexBetween from "components/FlexBetween";
-import { useListCalendarDatesQuery } from "state/api";
+import { useListCalendarDatesQuery, useDeleteCalendarDateMutation } from "state/api";
 import { Link } from "react-router-dom";
 
 const CalendarDates = () => {
   const theme = useTheme();
   const { data, isLoading } = useListCalendarDatesQuery();
+  const [deleteCalendarDateTrigger, result] = useDeleteCalendarDateMutation();
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    setRows(data || []);
+  }, [data]);
+
 
   const columns = [
     {
@@ -31,6 +38,31 @@ const CalendarDates = () => {
       field: "exception_type",
       headerName: "Exception Type",
       flex: 1,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+      renderCell: (params) => (
+        <Box>
+          <Button
+            variant="outlined"
+            sx={{
+              color: "red",
+              fontSize: "14px",
+              fontWeight: "bold",
+              borderColor: "red",
+            }}
+            size="small"
+            onClick={(item) => {
+              deleteCalendarDateTrigger({ id: params.id });
+              setRows(data.filter((obj) => obj.id !== params.id));
+            }}
+          >
+            Delete
+          </Button>
+        </Box>
+      ),
     },
   ];
 
@@ -100,7 +132,7 @@ const CalendarDates = () => {
           <DataGrid
             loading={isLoading || !data}
             getRowId={(row) => row.id}
-            rows={data || []}
+            rows={rows || []}
             columns={columns}
           />
         )}

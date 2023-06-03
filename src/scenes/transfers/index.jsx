@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   useTheme,
@@ -9,12 +9,18 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import Header from "components/Header";
 import FlexBetween from "components/FlexBetween";
-import { useListTransfersQuery } from "state/api";
+import { useListTransfersQuery, useDeleteTransferMutation } from "state/api";
 import { Link } from "react-router-dom";
 
 const Transfers = () => {
   const theme = useTheme();
   const { data, isLoading } = useListTransfersQuery();
+  const [deleteTransferTrigger, result] = useDeleteTransferMutation();
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    setRows(data || []);
+  }, [data]);
 
   const columns = [
     {
@@ -36,7 +42,32 @@ const Transfers = () => {
       field: "min_transfer_time",
       headerName: "Min Transfer Time",
       flex: 1,
-    }
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+      renderCell: (params) => (
+        <Box>
+          <Button
+            variant="outlined"
+            sx={{
+              color: "red",
+              fontSize: "14px",
+              fontWeight: "bold",
+              borderColor: "red",
+            }}
+            size="small"
+            onClick={(item) => {
+              deleteTransferTrigger({ id: params.id });
+              setRows(data.filter((obj) => obj.id !== params.id));
+            }}
+          >
+            Delete
+          </Button>
+        </Box>
+      ),
+    },
   ];
 
   return (
@@ -105,7 +136,7 @@ const Transfers = () => {
           <DataGrid
             loading={isLoading || !data}
             getRowId={(row) => row.id}
-            rows={data || []}
+            rows={rows || []}
             columns={columns}
           />
         )}

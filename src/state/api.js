@@ -27,6 +27,15 @@ export const api = createApi({
         },
       }),
     }),
+    deleteRoute: build.mutation({
+      query: (data) => ({
+        url: `routes/${data.id}`,
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
     createRoute: build.mutation({
       query: (data) => ({
         url: "routes/",
@@ -56,6 +65,15 @@ export const api = createApi({
         },
       }),
     }),
+    deleteAgency: build.mutation({
+      query: (data) => ({
+        url: `agencies/${data.id}`,
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
     listOfTerminals: build.query({
       query: () => ({
         url: "stops/",
@@ -70,6 +88,15 @@ export const api = createApi({
         url: "stops/",
         method: "POST",
         body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    deleteTerminal: build.mutation({
+      query: (data) => ({
+        url: `stops/${data.id}`,
+        method: "DELETE",
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -114,6 +141,15 @@ export const api = createApi({
         },
       }),
     }),
+    deleteCalendarDate: build.mutation({
+      query: (data) => ({
+        url: `calendar_dates/${data.id}`,
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
     listCalendar: build.query({
       query: () => ({
         url: "calendars/",
@@ -128,6 +164,15 @@ export const api = createApi({
         url: "calendars/",
         method: "POST",
         body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    deleteCalendar: build.mutation({
+      query: (data) => ({
+        url: `calendars/${data.id}`,
+        method: "DELETE",
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -152,6 +197,15 @@ export const api = createApi({
         },
       }),
     }),
+    deleteFare: build.mutation({
+      query: (data) => ({
+        url: `fares/${data.id}`,
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
     listTransfers: build.query({
       query: () => ({
         url: "transfers/",
@@ -170,6 +224,14 @@ export const api = createApi({
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
       }),
+    }),deleteTransfer: build.mutation({
+      query: (data) => ({
+        url: `transfers/${data.id}`,
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
     }),
     listTrips: build.query({
       query: (data) => ({
@@ -181,11 +243,19 @@ export const api = createApi({
         },
       }),
     }),
-    createTrip : build.mutation({
+    createTrip: build.mutation({
       query: (data) => ({
         url: "trips/",
         method: "POST",
         body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),deleteTrip: build.mutation({
+      query: (data) => ({
+        url: `trips/${data.id}`,
+        method: "DELETE",
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -214,4 +284,12 @@ export const {
   useCreateFareMutation,
   useAddTransferMutation,
   useCreateTripMutation,
+  useDeleteRouteMutation,
+  useDeleteCalendarMutation,
+  useDeleteCalendarDateMutation,
+  useDeleteFareMutation,
+  useDeleteTerminalMutation,
+  useDeleteAgencyMutation,
+  useDeleteTransferMutation,
+  useDeleteTripMutation,
 } = api;

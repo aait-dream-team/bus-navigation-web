@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   useTheme,
@@ -9,12 +9,18 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import Header from "components/Header";
 import FlexBetween from "components/FlexBetween";
-import { useListTripsQuery } from "state/api";
+import { useListTripsQuery, useDeleteTripMutation } from "state/api";
 import { Link } from "react-router-dom";
 
 const Trips = () => {
   const theme = useTheme();
   const { data, isLoading } = useListTripsQuery();
+  const [deleteTripTrigger, result] = useDeleteTripMutation();
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    setRows(data || []);
+  }, [data]);
 
   const columns = [
     {
@@ -36,6 +42,31 @@ const Trips = () => {
       field: "agency",
       headerName: "Agency",
       flex: 1,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+      renderCell: (params) => (
+        <Box>
+          <Button
+            variant="outlined"
+            sx={{
+              color: "red",
+              fontSize: "14px",
+              fontWeight: "bold",
+              borderColor: "red",
+            }}
+            size="small"
+            onClick={(item) => {
+              deleteTripTrigger({ id: params.id });
+              setRows(data.filter((obj) => obj.id !== params.id));
+            }}
+          >
+            Delete
+          </Button>
+        </Box>
+      ),
     },
   ];
 
@@ -105,7 +136,7 @@ const Trips = () => {
           <DataGrid
             loading={isLoading || !data}
             getRowId={(row) => row.id}
-            rows={data || []}
+            rows={rows || []}
             columns={columns}
           />
         )}

@@ -1,8 +1,8 @@
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider, Container, CircularProgress } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "theme";
 import { useSelector, useDispatch } from "react-redux";
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Layout from "scenes/layout";
 import AdminRoutes from "scenes/adminRoutes";
@@ -35,6 +35,7 @@ function App() {
   const token = useSelector((state) => state.global.token);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Retrieve data from local storage
@@ -54,7 +55,9 @@ function App() {
     if (localToken !== "null" && localToken !== token) {
       dispatch(setToken(localToken));
     }
-  });
+
+    setIsLoading(false);
+  }, [dispatch, userId, userType, token]);
 
   useEffect(() => {
     // Save data to local storage whenever it changes
@@ -62,6 +65,25 @@ function App() {
     localStorage.setItem("userType", userType);
     localStorage.setItem("token", token);
   }, [userId, userType, token]);
+
+  if (isLoading) {
+    // Show a loading spinner or component while data is being loaded
+    return (
+      <Container
+        maxWidth="100%"
+        sx={{
+          backgroundColor: theme.palette.primary.main,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "inherit",
+          width:"inherit"
+        }}
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <div className="app">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   useTheme,
@@ -10,11 +10,17 @@ import { DataGrid } from "@mui/x-data-grid";
 import Header from "components/Header";
 import FlexBetween from "components/FlexBetween";
 import { Link } from "react-router-dom";
-import { useListOfRoutesQuery } from "state/api";
+import { useListOfRoutesQuery, useDeleteRouteMutation } from "state/api";
 
 const AdminRoutes = () => {
   const theme = useTheme();
   const { data, isLoading } = useListOfRoutesQuery();
+  const [deleteRouteTrigger, result] = useDeleteRouteMutation();
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    setRows(data || []);
+  }, [data]);
 
   const columns = [
     {
@@ -25,11 +31,6 @@ const AdminRoutes = () => {
     {
       field: "route_short_name",
       headerName: "Route Short Name",
-      flex: 1,
-    },
-    {
-      field: "agency_id",
-      headerName: "Agency ID",
       flex: 1,
     },
     {
@@ -46,6 +47,31 @@ const AdminRoutes = () => {
       field: "route_type",
       headerName: "Route Type",
       flex: 1,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+      renderCell: (params) => (
+        <Box>
+          <Button
+            variant="outlined"
+            sx={{
+              color: "red",
+              fontSize: "14px",
+              fontWeight: "bold",
+              borderColor: "red",
+            }}
+            size="small"
+            onClick={(item) => {
+              deleteRouteTrigger({ id: params.id });
+              setRows(data.filter((obj) => obj.id !== params.id));
+            }}
+          >
+            Delete
+          </Button>
+        </Box>
+      ),
     },
   ];
 
@@ -115,7 +141,7 @@ const AdminRoutes = () => {
           <DataGrid
             loading={isLoading}
             getRowId={(row) => row.id}
-            rows={data || []}
+            rows={rows || []}
             columns={columns}
           />
         )}

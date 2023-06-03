@@ -1,14 +1,26 @@
-import React from "react";
-import { Box, useTheme, Button, CircularProgress, Container } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  useTheme,
+  Button,
+  CircularProgress,
+  Container,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Header from "components/Header";
 import FlexBetween from "components/FlexBetween";
 import { Link } from "react-router-dom";
-import { useListOfTerminalsQuery } from "state/api";
+import { useListOfTerminalsQuery, useDeleteTerminalMutation } from "state/api";
 
 const Terminal = () => {
   const theme = useTheme();
   const { data, isLoading } = useListOfTerminalsQuery();
+  const [deleteTerminalTrigger, result] = useDeleteTerminalMutation();
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    setRows(data || []);
+  }, [data]);
 
   const columns = [
     {
@@ -35,6 +47,31 @@ const Terminal = () => {
       field: "stop_long",
       headerName: "Longitude",
       flex: 1,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+      renderCell: (params) => (
+        <Box>
+          <Button
+            variant="outlined"
+            sx={{
+              color: "red",
+              fontSize: "14px",
+              fontWeight: "bold",
+              borderColor: "red",
+            }}
+            size="small"
+            onClick={(item) => {
+              deleteTerminalTrigger({ id: params.id });
+              setRows(data.filter((obj) => obj.id !== params.id));
+            }}
+          >
+            Delete
+          </Button>
+        </Box>
+      ),
     },
   ];
 
@@ -103,8 +140,8 @@ const Terminal = () => {
         ) : (
           <DataGrid
             loading={isLoading}
-            getRowId={(row) => row.stop_code}
-            rows={data}
+            getRowId={(row) => row.id}
+            rows={rows || []}
             columns={columns}
           />
         )}
