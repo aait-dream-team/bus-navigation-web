@@ -22,6 +22,11 @@ import {
   DashboardOutlined,
   HouseOutlined,
   ControlPointOutlined,
+  CalendarMonth,
+  CalendarViewDayTwoTone,
+  Money,
+  TransferWithinAStation,
+  TripOrigin
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
@@ -51,6 +56,26 @@ const Sidebar = ({
       {
         text: "Terminal",
         icon: <SignpostOutlined />,
+      },
+      {
+        text: "CalendarDates",
+        icon: <CalendarViewDayTwoTone />,
+      },
+      {
+        text: "Calendars",
+        icon: <CalendarMonth />,
+      },
+      {
+        text: "Fares",
+        icon: <Money />,
+      },
+      {
+        text: "Transfers",
+        icon: <TransferWithinAStation />,
+      },
+      {
+        text: "Trips",
+        icon: <TripOrigin />,
       },
       {
         text: "Report",

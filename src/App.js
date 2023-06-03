@@ -17,6 +17,16 @@ import AddTerminal from "scenes/addTerminal";
 import Network from "scenes/network";
 import Login from "scenes/login";
 import { setUserType, setUserId, setToken } from "state";
+import CalendarDates from "scenes/calendarDates";
+import AddCalendarDate from "scenes/addCalendarDates";
+import Calendar from "scenes/calendar";
+import AddCalendar from "scenes/addcalendar";
+import Fares from "scenes/fares";
+import AddFare from "scenes/addFare";
+import Transfers from "scenes/transfers";
+import AddTransfer from "scenes/addtransfer";
+import Trips from "scenes/trip";
+import AddTrip from "scenes/addTrip";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
@@ -33,15 +43,15 @@ function App() {
     const localToken = localStorage.getItem("token");
 
     // If data exists in local storage, set it as component state
-    if (localUserId !== 'null' && localUserId !== userId) {
+    if (localUserId !== "null" && localUserId !== userId) {
       dispatch(setUserId(localUserId));
     }
 
-    if (localUserType !== 'null' && localUserType !== userType) {
+    if (localUserType !== "null" && localUserType !== userType) {
       dispatch(setUserType(localUserType));
     }
 
-    if (localToken !== 'null' && localToken !== token) {
+    if (localToken !== "null" && localToken !== token) {
       dispatch(setToken(localToken));
     }
   });
@@ -81,7 +91,9 @@ function App() {
                     <AdminRoutes />
                   ) : userType === "superadmin" ? (
                     <SuperadminRoutes />
-                  ) : <Navigate to="/login" replace />
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
                 }
               />
               <Route path="/settings" element={<Settings />} />
@@ -93,6 +105,19 @@ function App() {
                   <Route path="/addterminal" element={<AddTerminal />} />
                   <Route path="/report" element={<Report />} />
                   <Route path="/addRoute" element={<AddRoute />} />
+                  <Route path="/calendarDates" element={<CalendarDates />} />
+                  <Route
+                    path="/addCalendarDates"
+                    element={<AddCalendarDate />}
+                  />
+                  <Route path="/calendars" element={<Calendar />} />
+                  <Route path="/addcalendar" element={<AddCalendar />} />
+                  <Route path="/fares" element={<Fares />} />
+                  <Route path="/addfare" element={<AddFare />} />
+                  <Route path="/transfers" element={<Transfers />} />
+                  <Route path="/addtransfer" element={<AddTransfer />} />
+                  <Route path="/trips" element={<Trips />} />
+                  <Route path="/addtrip" element={<AddTrip />} />
                 </>
               )}
 

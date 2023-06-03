@@ -95,6 +95,102 @@ export const api = createApi({
         },
       }),
     }),
+    ListCalendarDates: build.query({
+      query: () => ({
+        url: "calendar_dates/",
+        method: "GET",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    createCalendarDate: build.mutation({
+      query: (data) => ({
+        url: "calendar_dates/",
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    listCalendar: build.query({
+      query: () => ({
+        url: "calendars/",
+        method: "GET",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    createCalendar: build.mutation({
+      query: (data) => ({
+        url: "calendars/",
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    listFares: build.query({
+      query: () => ({
+        url: "fares/",
+        method: "GET",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    createFare: build.mutation({
+      query: (data) => ({
+        url: "fares/",
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    listTransfers: build.query({
+      query: () => ({
+        url: "transfers/",
+        method: "GET",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    addTransfer: build.mutation({
+      query: (data) => ({
+        url: "transfers/",
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    listTrips: build.query({
+      query: (data) => ({
+        url: "trips/",
+        method: "GET",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    createTrip : build.mutation({
+      query: (data) => ({
+        url: "trips/",
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -103,9 +199,19 @@ export const {
   useListOfRoutesQuery,
   useListOfTerminalsQuery,
   useListOfAgenciesQuery,
+  useListCalendarDatesQuery,
+  useListCalendarQuery,
+  useListFaresQuery,
+  useListTransfersQuery,
+  useListTripsQuery,
   useCreateRouteMutation,
   useCreateTerminalMutation,
   useCreateAgencyMutation,
   useCreateAdminMutation,
   useCreateReportMutation,
+  useCreateCalendarDateMutation,
+  useCreateCalendarMutation,
+  useCreateFareMutation,
+  useAddTransferMutation,
+  useCreateTripMutation,
 } = api;
