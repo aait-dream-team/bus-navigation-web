@@ -192,7 +192,7 @@ const AdminRoutes = () => {
             p: 4,
           }}
         >
-          <EditRouteModal row={selectedRow} />
+          <EditRouteModal row={selectedRow} rows={rows} setRows={setRows} closeModal={handleClose}  />
         </Box>
       </Modal>
     </>

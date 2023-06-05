@@ -10,25 +10,28 @@ import {
   Alert,
 } from "@mui/material";
 import Header from "components/Header";
-import { useAddTransferMutation } from "state/api";
+import { usePatchTransferMutation } from "state/api";
 
-const AddTransfer = () => {
+const EditTransferModal = ({ row, rows, setRows, closeModal }) => {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const [fromStop, setFromStop] = useState("");
-  const [toStop, setToStop] = useState("");
-  const [transferType, setTransferType] = useState("");
-  const [minTransferTime, setMinTransferTime] = useState("");
-  const [admin, setAdmin] = useState("");
+  const [fromStop, setFromStop] = useState(row.from_stop);
+  const [toStop, setToStop] = useState(row.to_stop);
+  const [transferType, setTransferType] = useState(row.transfer_type);
+  const [minTransferTime, setMinTransferTime] = useState(row.min_transfer_time);
+  const [admin, setAdmin] = useState(row.admin);
 
   const [open, setOpen] = useState(false); // snackbar state
-  const [trigger] = useAddTransferMutation();
+
+  const [trigger] = usePatchTransferMutation();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     // Handle form submission
-    const transferData = {
+    let data = undefined;
+    const newData = {
+      id: row.id,
       from_stop: fromStop,
       to_stop: toStop,
       transfer_type: transferType,
@@ -37,8 +40,14 @@ const AddTransfer = () => {
     };
 
     try {
-      await trigger(transferData).unwrap();
-      navigate("/transfers"); // Redirect to the transfers page after successful submission
+      data = await trigger(newData).unwrap();
+      closeModal();
+      for (const item of rows) {
+        if (item.id === row.id) {
+          setRows([...rows.filter((item) => item.id !== row.id), newData]);
+          return;
+        }
+      }
     } catch (error) {
       setOpen(true);
     }
@@ -124,4 +133,4 @@ const AddTransfer = () => {
   );
 };
 
-export default AddTransfer;
+export default EditTransferModal;

@@ -72,7 +72,7 @@ function App() {
       <Container
         maxWidth="100%"
         sx={{
-          backgroundColor: theme.palette.primary.main,
+          backgroundColor: theme.palette.primary[600],
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

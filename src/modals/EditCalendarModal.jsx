@@ -18,26 +18,26 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Header from "components/Header";
-import { useCreateCalendarMutation } from "state/api";
+import { usePatchCalendarMutation } from "state/api";
 
-const AddCalendar = () => {
+const EditCalendarModal = ({ row, rows, setRows, closeModal }) => {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const [monday, setMonday] = useState(false);
-  const [tuesday, setTuesday] = useState(false);
-  const [wednesday, setWednesday] = useState(false);
-  const [thursday, setThursday] = useState(false);
-  const [friday, setFriday] = useState(false);
-  const [saturday, setSaturday] = useState(false);
-  const [sunday, setSunday] = useState(false);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [agency, setAgency] = useState("");
+  const [monday, setMonday] = useState(row.monday);
+  const [tuesday, setTuesday] = useState(row.tuesday);
+  const [wednesday, setWednesday] = useState(row.wednesday);
+  const [thursday, setThursday] = useState(row.thursday);
+  const [friday, setFriday] = useState(row.friday);
+  const [saturday, setSaturday] = useState(row.saturday);
+  const [sunday, setSunday] = useState(row.sunday);
+  const [startDate, setStartDate] = useState(dayjs(row.start_date));
+  const [endDate, setEndDate] = useState(dayjs(row.end_date));
+  const [agency, setAgency] = useState(row.agency);
 
   const [open, setOpen] = useState(false); // snackbar state
 
-  const [trigger, result] = useCreateCalendarMutation();
+  const [trigger, result] = usePatchCalendarMutation();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -79,20 +79,29 @@ const AddCalendar = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    let data = undefined;
+    const newData = {
+      id: row.id,
+      monday,
+      tuesday,
+      wednesday,
+      thursday,
+      friday,
+      saturday,
+      sunday,
+      start_date: startDate.format("YYYY-MM-DD").toString(),
+      end_date: endDate.format("YYYY-MM-DD").toString(),
+      agency,
+    };
     try {
-      await trigger({
-        monday,
-        tuesday,
-        wednesday,
-        thursday,
-        friday,
-        saturday,
-        sunday,
-        start_date: startDate.format("YYYY-MM-DD").toString(),
-        end_date: endDate.format("YYYY-MM-DD").toString(),
-        agency,
-      }).unwrap();
-      navigate("/calendars");
+      data = await trigger(newData).unwrap();
+      closeModal();
+      for (const item of rows) {
+        if (item.id === row.id) {
+          setRows([...rows.filter((item) => item.id !== row.id), newData]);
+          return;
+        }
+      }
     } catch (e) {
       setOpen(true);
     }
@@ -124,7 +133,7 @@ const AddCalendar = () => {
           }}
           mb="1rem"
         >
-          <Header title="Create Calendar" />
+          <Header title="Edit Calendar" />
         </Box>
         <form onSubmit={handleSubmit}>
           <Box display="grid" gridTemplateColumns="repeat(1, 1fr)" gap={2}>
@@ -263,4 +272,4 @@ const AddCalendar = () => {
   );
 };
 
-export default AddCalendar;
+export default EditCalendarModal;
