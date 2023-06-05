@@ -27,10 +27,29 @@ export const api = createApi({
         },
       }),
     }),
+    getRoute: build.query({
+      query: (data) => ({
+        url: `routes/${data.id}/`,
+        method: "GET",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
     deleteRoute: build.mutation({
       query: (data) => ({
-        url: `routes/${data.id}`,
+        url: `routes/${data.id}/`,
         method: "DELETE",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    patchRoute: build.mutation({
+      query: (data) => ({
+        url: `routes/${data.id}/`,
+        method: "PUT",
+        body: data,
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -67,7 +86,7 @@ export const api = createApi({
     }),
     deleteAgency: build.mutation({
       query: (data) => ({
-        url: `agencies/${data.id}`,
+        url: `agencies/${data.id}/`,
         method: "DELETE",
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
@@ -93,9 +112,19 @@ export const api = createApi({
         },
       }),
     }),
+    patchTerminal: build.mutation({
+      query: (data) => ({
+        url: `stops/${data.id}/`,
+        method: "PUT",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
     deleteTerminal: build.mutation({
       query: (data) => ({
-        url: `stops/${data.id}`,
+        url: `stops/${data.id}/`,
         method: "DELETE",
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
@@ -141,9 +170,19 @@ export const api = createApi({
         },
       }),
     }),
+    patchCalendarDate: build.mutation({
+      query: (data) => ({
+        url: `calendar_dates/${data.id}/`,
+        method: "PUT",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
     deleteCalendarDate: build.mutation({
       query: (data) => ({
-        url: `calendar_dates/${data.id}`,
+        url: `calendar_dates/${data.id}/`,
         method: "DELETE",
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
@@ -169,9 +208,19 @@ export const api = createApi({
         },
       }),
     }),
+    patchCalendar: build.mutation({
+      query: (data) => ({
+        url: `calendars/${data.id}/`,
+        method: "PUT",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
     deleteCalendar: build.mutation({
       query: (data) => ({
-        url: `calendars/${data.id}`,
+        url: `calendars/${data.id}/`,
         method: "DELETE",
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
@@ -197,9 +246,19 @@ export const api = createApi({
         },
       }),
     }),
+    patchFare: build.mutation({
+      query: (data) => ({
+        url: `fares/${data.id}/`,
+        method: "PUT",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
     deleteFare: build.mutation({
       query: (data) => ({
-        url: `fares/${data.id}`,
+        url: `fares/${data.id}/`,
         method: "DELETE",
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
@@ -224,9 +283,20 @@ export const api = createApi({
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
       }),
-    }),deleteTransfer: build.mutation({
+    }),
+    patchTransfer: build.mutation({
       query: (data) => ({
-        url: `transfers/${data.id}`,
+        url: `transfers/${data.id}/`,
+        method: "PUT",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    deleteTransfer: build.mutation({
+      query: (data) => ({
+        url: `transfers/${data.id}/`,
         method: "DELETE",
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
@@ -252,9 +322,20 @@ export const api = createApi({
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
       }),
-    }),deleteTrip: build.mutation({
+    }),
+    patchTrip: build.mutation({
       query: (data) => ({
-        url: `trips/${data.id}`,
+        url: `trips/${data.id}/`,
+        method: "PUT",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    deleteTrip: build.mutation({
+      query: (data) => ({
+        url: `trips/${data.id}/`,
         method: "DELETE",
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
@@ -292,4 +373,12 @@ export const {
   useDeleteAgencyMutation,
   useDeleteTransferMutation,
   useDeleteTripMutation,
+  useGetRouteQuery,
+  usePatchRouteMutation,
+  usePatchTerminalMutation,
+  usePatchCalendarDateMutation,
+  usePatchCalendarMutation,
+  usePatchFareMutation,
+  usePatchTransferMutation,
+  usePatchTripMutation,
 } = api;
