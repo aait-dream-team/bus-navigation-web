@@ -13,8 +13,13 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import Header from "components/Header";
 import { useCreateReportMutation } from "state/api";
+import dayjs from "dayjs";
 
 const Report = () => {
   const theme = useTheme();
@@ -30,7 +35,9 @@ const Report = () => {
   const [effectError, setEffectError] = useState(false);
   const [duration, setDuration] = useState("");
   const [durationError, setDurationError] = useState(false);
-  const [startTimestamp, setStartTimestamp] = useState("");
+  const [startTimestamp, setStartTimestamp] = useState(
+    dayjs("2021-10-10T00:00:00")
+  );
   const [startTimestampError, setStartTimestampError] = useState(false);
 
   const [trigger, result] = useCreateReportMutation();
@@ -86,10 +93,6 @@ const Report = () => {
         setDuration(value);
         setDurationError(false);
         break;
-      case "startTimestamp":
-        setStartTimestamp(value);
-        setStartTimestampError(false);
-        break;
       default:
         break;
     }
@@ -137,6 +140,7 @@ const Report = () => {
     }
 
     // Handle form submission
+    console.log("Submitting form...");
     let data = undefined;
     try {
       data = await trigger({
@@ -145,7 +149,7 @@ const Report = () => {
         cause: cause,
         effect: effect,
         duration: duration,
-        start_timestamp: startTimestamp,
+        start_timestamp: startTimestamp.format("HH:mm:ss"),
       }).unwrap();
       navigate("/");
     } catch (e) {
@@ -200,9 +204,9 @@ const Report = () => {
                   affectedEntityError ? "Affected Entity is required" : ""
                 }
               >
-                <MenuItem value="route">Route</MenuItem>
-                <MenuItem value="agency">Agency</MenuItem>
-                <MenuItem value="trip">Trip</MenuItem>
+                <MenuItem value="route">route</MenuItem>
+                <MenuItem value="agency">agency</MenuItem>
+                <MenuItem value="trip">trip</MenuItem>
               </Select>
             </FormControl>
             <TextField
@@ -257,17 +261,24 @@ const Report = () => {
               error={durationError}
               helperText={durationError ? "Duration is required" : ""}
             />
-            <TextField
-              label="Start Timestamp"
-              value={startTimestamp}
-              name="startTimestamp"
-              onChange={handleInputChange}
-              required
-              error={startTimestampError}
-              helperText={
-                startTimestampError ? "Start Timestamp is required" : ""
-              }
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <TimePicker
+                clearable
+                ampm={false}
+                label="Start Timestamp"
+                value={startTimestamp}
+                name="startTimestamp"
+                onChange={(newValue) => {
+                  console.log(newValue);
+                  setStartTimestamp(dayjs(newValue));
+                }}
+                required
+                error={startTimestampError}
+                helperText={
+                  startTimestampError ? "Start Timestamp is required" : ""
+                }
+              />
+            </LocalizationProvider>
           </Box>
           <Box display="grid" justifyContent="center" gap={2} mt="2rem">
             <Button
