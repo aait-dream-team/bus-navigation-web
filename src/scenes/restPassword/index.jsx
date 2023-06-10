@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
   TextField,
@@ -11,64 +11,43 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { setToken, setUserId, setUserType } from "state";
-import { useLoginMutation } from "state/api";
+import { useResetPasswordRequestMutation } from "state/api";
 
-const Login = () => {
+const ResetPassword = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
-  const [usernameError, setUsernameError] = useState(false);
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
-  const [trigger, result] = useLoginMutation();
+  const [emailError, setEmailError] = useState(false);
 
-  const [open, setOpen] = useState(false); // snackbar state
+  const [openSnackbar, setOpenSnackBar] = useState(false); // snackbar state
+  const [trigger, result] = useResetPasswordRequestMutation();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     if (name === "email") {
       setEmail(value);
-      setUsernameError(false);
-    }
-    if (name === "password") {
-      setPassword(value);
-      setPasswordError(false);
+      setEmailError(false);
     }
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    // Handle form submission here
+  const handleEmailSubmit = async (event) => {
     event.preventDefault();
     // Input validation
     if (email === "") {
-      setUsernameError(true);
-      return;
-    }
-    if (password === "") {
-      setPasswordError(true);
+      setEmailError(true);
       return;
     }
 
     let data = undefined;
     try {
-      data = await trigger({ username: email, password }).unwrap();
-
-      dispatch(setUserId(data?.user_id));
-      dispatch(setToken(data?.token));
-
-      if (data?.user_type === "sys-admin") {
-        dispatch(setUserType("superadmin"));
-        navigate("/", { replace: true });
-      } else {
-        dispatch(setUserType("admin"));
-        navigate("/", { replace: true });
-      }
+      localStorage.setItem("email", email);
+      data = await trigger({ email }).unwrap();
+      console.log("Email With an OTP has been sent to your email.");
+      navigate("/changepassword", { replace: true })
     } catch (e) {
-      setOpen(true);
+      openSnackbar(true);
     }
   };
 
@@ -76,7 +55,7 @@ const Login = () => {
     if (reason === "clickaway") {
       return;
     }
-    setOpen(false);
+    openSnackbar(false);
   };
 
   return (
@@ -109,6 +88,16 @@ const Login = () => {
             </Typography>
           </Grid>
           <Grid item xs={12}>
+            <Typography
+              variant="h6"
+              align="center"
+              gutterBottom
+              color={theme.palette.secondary.main}
+            >
+              Enter your email to reset your password
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
             <TextField
               label="Email"
               name="email"
@@ -118,22 +107,8 @@ const Login = () => {
               fullWidth
               required
               margin="normal"
-              error={usernameError}
-              helperText={usernameError ? "Email is required" : ""}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Password"
-              name="password"
-              type="password"
-              value={password}
-              onChange={handleInputChange}
-              fullWidth
-              required
-              margin="normal"
-              error={passwordError}
-              helperText={passwordError ? "Password is required" : ""}
+              error={emailError}
+              helperText={emailError ? "Email is required" : ""}
             />
           </Grid>
           <Grid item xs={12}>
@@ -149,7 +124,7 @@ const Login = () => {
               <Button
                 variant="outlined"
                 type="submit"
-                onClick={handleSubmit}
+                onClick={handleEmailSubmit}
                 sx={{
                   color: theme.palette.secondary.main,
                   fontSize: "14px",
@@ -157,27 +132,17 @@ const Login = () => {
                   padding: "10px 20px",
                 }}
               >
-                Login
+                Submit
               </Button>
-              <Link to="/resetpassword">
-                <Button
-                  variant="text"
-                  type="submit"
-                  size="small"
-                  sx={{
-                    color: theme.palette.secondary.main,
-                    fontWeight: "bold",
-                    marginTop: "10px",
-                  }}
-                >
-                  Reset Password
-                </Button>
-              </Link>
             </Container>
           </Grid>
         </Grid>
       </Container>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={1000}
+        onClose={handleClose}
+      >
         <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
           Email or Password is Incorrect!
         </Alert>
@@ -186,4 +151,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ResetPassword;
