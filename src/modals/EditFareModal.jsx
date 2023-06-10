@@ -7,10 +7,10 @@ import {
   Box,
   Container,
   Alert,
-  Snackbar,
 } from "@mui/material";
 import Header from "components/Header";
 import { usePatchFareMutation } from "state/api";
+import { enqueueSnackbar } from "notistack";
 
 const EditFareModal = ({ row, rows, setRows, closeModal }) => {
   const theme = useTheme();
@@ -21,8 +21,6 @@ const EditFareModal = ({ row, rows, setRows, closeModal }) => {
   const [route, setRoute] = useState(row.route);
   const [startStop, setStartStop] = useState(row.start_stop);
   const [endStop, setEndStop] = useState(row.end_stop);
-
-  const [open, setOpen] = useState(false); // snackbar state
 
   const [trigger, result] = usePatchFareMutation();
 
@@ -44,11 +42,16 @@ const EditFareModal = ({ row, rows, setRows, closeModal }) => {
       for (const item of rows) {
         if (item.id === row.id) {
           setRows([...rows.filter((item) => item.id !== row.id), newData]);
+          enqueueSnackbar("Fare edited successfully.", {
+            variant: "success",
+          });
           return;
         }
       }
     } catch (e) {
-      setOpen(true);
+      enqueueSnackbar("Error editing fare.", {
+        variant: "error",
+      });
     }
   };
 
@@ -56,7 +59,6 @@ const EditFareModal = ({ row, rows, setRows, closeModal }) => {
     if (reason === "clickaway") {
       return;
     }
-    setOpen(false);
   };
 
   return (
@@ -130,11 +132,6 @@ const EditFareModal = ({ row, rows, setRows, closeModal }) => {
           </Box>
         </form>
       </Container>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Something went wrong. Please try again.
-        </Alert>
-      </Snackbar>
     </>
   );
 };

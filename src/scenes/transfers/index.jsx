@@ -13,6 +13,7 @@ import FlexBetween from "components/FlexBetween";
 import { useListTransfersQuery, useDeleteTransferMutation } from "state/api";
 import { Link } from "react-router-dom";
 import EditTransferModal from "modals/EditTransferModal";
+import { enqueueSnackbar } from "notistack";
 
 const Transfers = () => {
   const theme = useTheme();
@@ -85,6 +86,9 @@ const Transfers = () => {
             onClick={(item) => {
               deleteTransferTrigger({ id: params.id });
               setRows(data.filter((obj) => obj.id !== params.id));
+              enqueueSnackbar("Transfer deleted successfully!", {
+                variant: "success",
+              });
             }}
           >
             Delete
@@ -133,7 +137,7 @@ const Transfers = () => {
             },
             "& .MuiDataGrid-virtualScroller": {
               backgroundColor: theme.palette.primary.light,
-              overflow: "hidden",
+              
             },
             "& .MuiDataGrid-footerContainer": {
               backgroundColor: theme.palette.background.alt,

@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  TextField,
-  Button,
-  useTheme,
-  Box,
-  Container,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { TextField, Button, useTheme, Box, Container } from "@mui/material";
 import Header from "components/Header";
 import { useAddTransferMutation } from "state/api";
+import { enqueueSnackbar } from "notistack";
 
 const AddTransfer = () => {
   const theme = useTheme();
@@ -22,7 +15,6 @@ const AddTransfer = () => {
   const [minTransferTime, setMinTransferTime] = useState("");
   const [admin, setAdmin] = useState("");
 
-  const [open, setOpen] = useState(false); // snackbar state
   const [trigger] = useAddTransferMutation();
 
   const handleSubmit = async (event) => {
@@ -39,16 +31,10 @@ const AddTransfer = () => {
     try {
       await trigger(transferData).unwrap();
       navigate("/transfers"); // Redirect to the transfers page after successful submission
+      enqueueSnackbar("Transfer successfully created!", { variant: "success" });
     } catch (error) {
-      setOpen(true);
+      enqueueSnackbar("Error creating Transfer", { variant: "error" });
     }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
   };
 
   return (
@@ -115,11 +101,6 @@ const AddTransfer = () => {
           </form>
         </Box>
       </Container>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Something went wrong please make sure the inputs are correct.
-        </Alert>
-      </Snackbar>
     </>
   );
 };

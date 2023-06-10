@@ -13,6 +13,7 @@ import FlexBetween from "components/FlexBetween";
 import { Link } from "react-router-dom";
 import { useListOfTerminalsQuery, useDeleteTerminalMutation } from "state/api";
 import EditTerminalModal from "modals/EditTerminalModal";
+import { enqueueSnackbar } from "notistack";
 
 const Terminal = () => {
   const theme = useTheme();
@@ -90,6 +91,7 @@ const Terminal = () => {
             onClick={(item) => {
               deleteTerminalTrigger({ id: params.id });
               setRows(data.filter((obj) => obj.id !== params.id));
+              enqueueSnackbar('Terminal deleted successfully!', { variant: 'success' })
             }}
           >
             Delete
@@ -138,7 +140,7 @@ const Terminal = () => {
             },
             "& .MuiDataGrid-virtualScroller": {
               backgroundColor: theme.palette.primary.light,
-              overflow: "hidden",
+              
             },
             "& .MuiDataGrid-footerContainer": {
               backgroundColor: theme.palette.background.alt,

@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  TextField,
-  Button,
-  useTheme,
-  Box,
-  Container,
-  Alert,
-  Snackbar,
-} from "@mui/material";
+import { TextField, Button, useTheme, Box, Container } from "@mui/material";
 import Header from "components/Header";
 import { usePatchTerminalMutation } from "state/api";
+import { enqueueSnackbar } from "notistack";
 
 const EditTerminalModal = ({ row, rows, setRows, closeModal }) => {
   const theme = useTheme();
@@ -29,8 +22,6 @@ const EditTerminalModal = ({ row, rows, setRows, closeModal }) => {
   const [stopUrl, setStopUrl] = useState(row.stop_url);
   const [stopUrlError, setStopUrlError] = useState(false);
   const [locationType, setLocationType] = useState("dkn");
-
-  const [open, setOpen] = useState(false); // snackbar state
 
   const [trigger, result] = usePatchTerminalMutation();
 
@@ -113,19 +104,15 @@ const EditTerminalModal = ({ row, rows, setRows, closeModal }) => {
       for (const item of rows) {
         if (item.id === row.id) {
           setRows([...rows.filter((item) => item.id !== row.id), newData]);
+          enqueueSnackbar("Terminal edited successfully.", {
+            variant: "success",
+          });
           return;
         }
       }
     } catch (e) {
-      setOpen(true);
+      enqueueSnackbar("Error editing terminal.", { variant: "error" });
     }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
   };
 
   return (
@@ -229,11 +216,6 @@ const EditTerminalModal = ({ row, rows, setRows, closeModal }) => {
           </Box>
         </form>
       </Container>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Something went wrong please make sure the inputs are correct.
-        </Alert>
-      </Snackbar>
     </>
   );
 };

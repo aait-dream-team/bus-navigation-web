@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  TextField,
-  Button,
-  Box,
-  Container,
-  useTheme,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { TextField, Button, Box, Container, useTheme } from "@mui/material";
 import Header from "components/Header";
 import { useCreateRouteMutation } from "state/api";
+import { enqueueSnackbar } from "notistack";
 
 const AddRoute = () => {
   const theme = useTheme();
@@ -26,8 +19,6 @@ const AddRoute = () => {
   const [routeColorError, setRouteColorError] = useState(false);
   const [agency, setAgency] = useState("");
   const [agencyError, setAgencyError] = useState(false);
-
-  const [open, setOpen] = useState(false); // snackbar state
 
   const [trigger, result] = useCreateRouteMutation();
 
@@ -80,7 +71,6 @@ const AddRoute = () => {
       return;
     }
 
-
     let data = undefined;
     try {
       data = await trigger({
@@ -92,16 +82,10 @@ const AddRoute = () => {
         agency: agency,
       }).unwrap();
       navigate("/routes");
+      enqueueSnackbar("Route Successfully created!", { variant : "success"});
     } catch (e) {
-      setOpen(true);
+      enqueueSnackbar("Error creating Route", { variant: "error" });
     }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
   };
 
   return (
@@ -135,7 +119,9 @@ const AddRoute = () => {
               onChange={handleInputChange}
               required
               error={routeShortNameError}
-              helperText={routeShortNameError ? "Route short name is required" : ""}
+              helperText={
+                routeShortNameError ? "Route short name is required" : ""
+              }
             />
             <TextField
               label="Route Long Name"
@@ -144,7 +130,9 @@ const AddRoute = () => {
               onChange={handleInputChange}
               required
               error={routeLongNameError}
-              helperText={routeLongNameError ? "Route long name is required" : ""}
+              helperText={
+                routeLongNameError ? "Route long name is required" : ""
+              }
             />
             <TextField
               label="Route Description"
@@ -201,11 +189,6 @@ const AddRoute = () => {
           </Container>
         </form>
       </Container>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Something went wrong please make sure the inputs are correct.
-        </Alert>
-      </Snackbar>
     </>
   );
 };

@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  TextField,
-  Button,
-  useTheme,
-  Box,
-  Container,
-  Alert,
-  Snackbar,
-} from "@mui/material";
+import { TextField, Button, useTheme, Box, Container } from "@mui/material";
 import Header from "components/Header";
 import { useCreateFareMutation } from "state/api";
+import { enqueueSnackbar } from "notistack";
 
 const AddFare = () => {
   const theme = useTheme();
@@ -21,8 +14,6 @@ const AddFare = () => {
   const [route, setRoute] = useState("");
   const [startStop, setStartStop] = useState("");
   const [endStop, setEndStop] = useState("");
-
-  const [open, setOpen] = useState(false); // snackbar state
 
   const [trigger, result] = useCreateFareMutation();
 
@@ -39,16 +30,10 @@ const AddFare = () => {
         end_stop: endStop,
       }).unwrap();
       navigate("/");
+      enqueueSnackbar("Fare created successfully!", { variant: "success" });
     } catch (e) {
-      setOpen(true);
+      enqueueSnackbar("Error creating Fare", { variant: "error" });
     }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
   };
 
   return (
@@ -122,11 +107,6 @@ const AddFare = () => {
           </Box>
         </form>
       </Container>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Something went wrong. Please try again.
-        </Alert>
-      </Snackbar>
     </>
   );
 };

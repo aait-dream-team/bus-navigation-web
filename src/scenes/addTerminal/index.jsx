@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  TextField,
-  Button,
-  useTheme,
-  Box,
-  Container,
-  Alert,
-  Snackbar,
-} from "@mui/material";
+import { TextField, Button, useTheme, Box, Container } from "@mui/material";
 import Header from "components/Header";
 import { useCreateTerminalMutation } from "state/api";
+import { enqueueSnackbar } from "notistack";
 
 const AddTerminal = () => {
   const theme = useTheme();
@@ -29,8 +22,6 @@ const AddTerminal = () => {
   const [stopUrl, setStopUrl] = useState("");
   const [stopUrlError, setStopUrlError] = useState(false);
   const [locationType, setLocationType] = useState("dkn");
-
-  const [open, setOpen] = useState(false); // snackbar state
 
   const [trigger, result] = useCreateTerminalMutation();
 
@@ -71,7 +62,14 @@ const AddTerminal = () => {
       setStopDescError(true);
       return;
     }
-    if (stopUrl === "" || !stopUrl.match(new RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi))) {
+    if (
+      stopUrl === "" ||
+      !stopUrl.match(
+        new RegExp(
+          /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
+        )
+      )
+    ) {
       setStopUrlError(true);
       return;
     }
@@ -101,16 +99,10 @@ const AddTerminal = () => {
         admin: localStorage.getItem("userId"),
       }).unwrap();
       navigate("/terminal");
+      enqueueSnackbar("Terminal successfully created!", { variant: "success" });
     } catch (e) {
-      setOpen(true);
+      enqueueSnackbar("Error creating Terminal", { variant: "error" });
     }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
   };
 
   return (
@@ -214,11 +206,6 @@ const AddTerminal = () => {
           </Box>
         </form>
       </Container>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Something went wrong please make sure the inputs are correct.
-        </Alert>
-      </Snackbar>
     </>
   );
 };

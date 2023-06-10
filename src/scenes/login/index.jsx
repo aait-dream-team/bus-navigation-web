@@ -8,11 +8,10 @@ import {
   Typography,
   Container,
   useTheme,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import { setToken, setUserId, setUserType } from "state";
 import { useLoginMutation } from "state/api";
+import { enqueueSnackbar } from "notistack";
 
 const Login = () => {
   const theme = useTheme();
@@ -24,8 +23,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const [trigger, result] = useLoginMutation();
-
-  const [open, setOpen] = useState(false); // snackbar state
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -67,16 +64,10 @@ const Login = () => {
         dispatch(setUserType("admin"));
         navigate("/", { replace: true });
       }
+      enqueueSnackbar("Welcome back!");
     } catch (e) {
-      setOpen(true);
+      enqueueSnackbar("Error while trying to login, make sure the email and password are valid.", { variant: 'error' })
     }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
   };
 
   return (
@@ -177,11 +168,6 @@ const Login = () => {
           </Grid>
         </Grid>
       </Container>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Email or Password is Incorrect!
-        </Alert>
-      </Snackbar>
     </>
   );
 };

@@ -6,8 +6,6 @@ import {
   useTheme,
   Box,
   Container,
-  Snackbar,
-  Alert,
   FormControl,
   InputLabel,
   Select,
@@ -41,7 +39,6 @@ const Report = () => {
   const [startTimestampError, setStartTimestampError] = useState(false);
 
   const [trigger, result] = useCreateReportMutation();
-  const [open, setOpen] = useState(false); // snackbar state
 
   const causes = [
     "UNKNOWN_CAUSE",
@@ -153,17 +150,9 @@ const Report = () => {
       }).unwrap();
       navigate("/");
     } catch (e) {
-      setOpen(true);
     }
   };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
-  };
-
+  
   return (
     <>
       <Container
@@ -297,11 +286,6 @@ const Report = () => {
           </Box>
         </form>
       </Container>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Something Went Wrong, Please Try again!
-        </Alert>
-      </Snackbar>
     </>
   );
 };

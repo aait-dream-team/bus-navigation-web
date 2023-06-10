@@ -13,6 +13,7 @@ import FlexBetween from "components/FlexBetween";
 import { useListTripsQuery, useDeleteTripMutation } from "state/api";
 import { Link } from "react-router-dom";
 import EditTripModal from "modals/EditTripModal";
+import { enqueueSnackbar } from "notistack";
 
 const Trips = () => {
   const theme = useTheme();
@@ -85,6 +86,7 @@ const Trips = () => {
             onClick={(item) => {
               deleteTripTrigger({ id: params.id });
               setRows(data.filter((obj) => obj.id !== params.id));
+              enqueueSnackbar('Trip deleted successfully!', { variant: 'success' })
             }}
           >
             Delete
@@ -133,7 +135,7 @@ const Trips = () => {
             },
             "& .MuiDataGrid-virtualScroller": {
               backgroundColor: theme.palette.primary.light,
-              overflow: "hidden",
+              
             },
             "& .MuiDataGrid-footerContainer": {
               backgroundColor: theme.palette.background.alt,

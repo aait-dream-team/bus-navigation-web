@@ -6,8 +6,6 @@ import {
   useTheme,
   Box,
   Container,
-  Alert,
-  Snackbar,
   FormControl,
   InputLabel,
   Select,
@@ -19,6 +17,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Header from "components/Header";
 import { useCreateCalendarMutation } from "state/api";
+import { useSnackbar } from 'notistack'
+
 
 const AddCalendar = () => {
   const theme = useTheme();
@@ -35,9 +35,8 @@ const AddCalendar = () => {
   const [endDate, setEndDate] = useState("");
   const [agency, setAgency] = useState("");
 
-  const [open, setOpen] = useState(false); // snackbar state
-
   const [trigger, result] = useCreateCalendarMutation();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -93,16 +92,10 @@ const AddCalendar = () => {
         agency,
       }).unwrap();
       navigate("/calendars");
+      enqueueSnackbar('Calendar created', { variant: 'success' })
     } catch (e) {
-      setOpen(true);
+      enqueueSnackbar('Error creating calendar', { variant: 'error' })
     }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
   };
 
   return (
@@ -254,11 +247,6 @@ const AddCalendar = () => {
           </Box>
         </form>
       </Container>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Something went wrong. Please make sure the inputs are correct.
-        </Alert>
-      </Snackbar>
     </>
   );
 };

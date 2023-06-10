@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  TextField,
-  Button,
-  useTheme,
-  Box,
-  Container,
-  Alert,
-  Snackbar,
-} from "@mui/material";
+import { TextField, Button, useTheme, Box, Container } from "@mui/material";
 import Header from "components/Header";
 import { usePatchTripMutation } from "state/api";
+import { enqueueSnackbar } from "notistack";
 
 const EditTripModal = ({ row, rows, setRows, closeModal }) => {
   const theme = useTheme();
@@ -20,8 +13,6 @@ const EditTripModal = ({ row, rows, setRows, closeModal }) => {
   const [shortName, setShortName] = useState(row.short_name);
   const [direction, setDirection] = useState(row.direction);
   const [agency, setAgency] = useState(row.agency);
-
-  const [open, setOpen] = useState(false); // snackbar state
 
   const [trigger, result] = usePatchTripMutation();
 
@@ -37,24 +28,22 @@ const EditTripModal = ({ row, rows, setRows, closeModal }) => {
       agency: agency,
     };
     try {
-        data = await trigger(newData).unwrap();
-        closeModal();
-        for (const item of rows) {
-          if (item.id === row.id) {
-            setRows([...rows.filter((item) => item.id !== row.id), newData]);
-            return;
-          }
+      data = await trigger(newData).unwrap();
+      closeModal();
+      for (const item of rows) {
+        if (item.id === row.id) {
+          setRows([...rows.filter((item) => item.id !== row.id), newData]);
+          enqueueSnackbar("Trip edited successfully.", {
+            variant: "success",
+          });
+          return;
         }
+      }
     } catch (e) {
-      setOpen(true);
+      enqueueSnackbar("Error editing trip.", {
+        variant: "error",
+      });
     }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
   };
 
   return (
@@ -122,11 +111,6 @@ const EditTripModal = ({ row, rows, setRows, closeModal }) => {
           </Box>
         </form>
       </Container>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Something went wrong. Please try again.
-        </Alert>
-      </Snackbar>
     </>
   );
 };
