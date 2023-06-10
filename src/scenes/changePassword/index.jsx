@@ -11,62 +11,61 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { setToken, setUserId, setUserType } from "state";
-import { useLoginMutation } from "state/api";
+import { useResetPasswordMutation } from "state/api";
 
-const Login = () => {
+const ChangePassword = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [email, setEmail] = useState("");
-  const [usernameError, setUsernameError] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [otpError, setOtpError] = useState(false);
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
-  const [trigger, result] = useLoginMutation();
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
   const [open, setOpen] = useState(false); // snackbar state
+  const [trigger, result] = useResetPasswordMutation();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    if (name === "email") {
-      setEmail(value);
-      setUsernameError(false);
+    if (name === "otp") {
+      setOtp(value);
+      setOtpError(false);
     }
     if (name === "password") {
       setPassword(value);
       setPasswordError(false);
     }
+    if (name === "confirmPassword") {
+      setConfirmPassword(value);
+      setConfirmPasswordError(false);
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle form submission here
-    event.preventDefault();
     // Input validation
-    if (email === "") {
-      setUsernameError(true);
+    if (otp === "" || otp.length !== 6) {
+      setOtpError(true);
       return;
     }
+
     if (password === "") {
       setPasswordError(true);
+      return;
+    }
+    if (confirmPassword === "" || confirmPassword !== password) {
+      setConfirmPasswordError(true);
       return;
     }
 
     let data = undefined;
     try {
-      data = await trigger({ username: email, password }).unwrap();
-
-      dispatch(setUserId(data?.user_id));
-      dispatch(setToken(data?.token));
-
-      if (data?.user_type === "sys-admin") {
-        dispatch(setUserType("superadmin"));
-        navigate("/", { replace: true });
-      } else {
-        dispatch(setUserType("admin"));
-        navigate("/", { replace: true });
-      }
+      data = await trigger({ email : localStorage.getItem("email") , otp, password }).unwrap();
+      console.log("Password changed successfully");
+      navigate("/login", { replace: true });
     } catch (e) {
       setOpen(true);
     }
@@ -109,22 +108,31 @@ const Login = () => {
             </Typography>
           </Grid>
           <Grid item xs={12}>
+            <Typography
+              variant="h6"
+              align="center"
+              color={theme.palette.secondary.main}
+            >
+              Change Password
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
             <TextField
-              label="Email"
-              name="email"
-              type="email"
-              value={email}
+              label="OTP"
+              name="otp"
+              type="number"
+              value={otp}
               onChange={handleInputChange}
               fullWidth
               required
               margin="normal"
-              error={usernameError}
-              helperText={usernameError ? "Email is required" : ""}
+              error={otpError}
+              helperText={otpError ? "OTP should be 6 characters long" : ""}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
-              label="Password"
+              label="New Password"
               name="password"
               type="password"
               value={password}
@@ -134,6 +142,24 @@ const Login = () => {
               margin="normal"
               error={passwordError}
               helperText={passwordError ? "Password is required" : ""}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Confirm Password"
+              name="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={handleInputChange}
+              fullWidth
+              required
+              margin="normal"
+              error={confirmPasswordError}
+              helperText={
+                confirmPasswordError
+                  ? "Make sure the 'password' and 'confirm password' match"
+                  : ""
+              }
             />
           </Grid>
           <Grid item xs={12}>
@@ -157,33 +183,19 @@ const Login = () => {
                   padding: "10px 20px",
                 }}
               >
-                Login
+                ChangePassword
               </Button>
-              <Link to="/resetpassword">
-                <Button
-                  variant="text"
-                  type="submit"
-                  size="small"
-                  sx={{
-                    color: theme.palette.secondary.main,
-                    fontWeight: "bold",
-                    marginTop: "10px",
-                  }}
-                >
-                  Reset Password
-                </Button>
-              </Link>
             </Container>
           </Grid>
         </Grid>
       </Container>
       <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Email or Password is Incorrect!
+          Username or Password is Incorrect!
         </Alert>
       </Snackbar>
     </>
   );
 };
 
-export default Login;
+export default ChangePassword;

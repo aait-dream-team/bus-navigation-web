@@ -342,6 +342,20 @@ export const api = createApi({
         },
       }),
     }),
+    resetPasswordRequest: build.mutation({
+      query: (data) => ({
+        url: "api-initiate-reset-password/",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    resetPassword: build.mutation({
+      query: (data) => ({
+        url: "api-reset-password/",
+        method: "PUT",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -381,4 +395,6 @@ export const {
   usePatchFareMutation,
   usePatchTransferMutation,
   usePatchTripMutation,
+  useResetPasswordRequestMutation,
+  useResetPasswordMutation,
 } = api;

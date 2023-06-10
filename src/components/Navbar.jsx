@@ -45,6 +45,7 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
     localStorage.setItem("userId", null);
     localStorage.setItem("userType", null);
     localStorage.setItem("token", null);
+    localStorage.setItem("email", null);
 
     if (mode === "light") {
       dispatch(setMode());

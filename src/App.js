@@ -1,4 +1,9 @@
-import { CssBaseline, ThemeProvider, Container, CircularProgress } from "@mui/material";
+import {
+  CssBaseline,
+  ThemeProvider,
+  Container,
+  CircularProgress,
+} from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "theme";
 import { useSelector, useDispatch } from "react-redux";
@@ -27,6 +32,8 @@ import Transfers from "scenes/transfers";
 import AddTransfer from "scenes/addtransfer";
 import Trips from "scenes/trip";
 import AddTrip from "scenes/addTrip";
+import ResetPassword from "scenes/restPassword";
+import ChangePassword from "scenes/changePassword";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
@@ -77,7 +84,7 @@ function App() {
           alignItems: "center",
           justifyContent: "center",
           height: "inherit",
-          width:"inherit"
+          width: "inherit",
         }}
       >
         <CircularProgress />
@@ -92,6 +99,8 @@ function App() {
           <CssBaseline />
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/resetpassword" element={<ResetPassword />} />
+            <Route path="/changepassword" element={<ChangePassword />} />
             <Route element={<Layout />}>
               {/* common Routes */}
               <Route
