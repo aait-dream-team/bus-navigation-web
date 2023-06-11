@@ -6,11 +6,11 @@ import {
   Box,
   Container,
   useTheme,
-  Snackbar,
   Alert,
 } from "@mui/material";
 import Header from "components/Header";
 import { usePatchRouteMutation } from "state/api";
+import { enqueueSnackbar } from "notistack";
 
 const EditRouteModal = ({ row, rows, setRows, closeModal }) => {
   const theme = useTheme();
@@ -26,8 +26,6 @@ const EditRouteModal = ({ row, rows, setRows, closeModal }) => {
   const [routeColorError, setRouteColorError] = useState(false);
   const [agency, setAgency] = useState(row.agency);
   const [agencyError, setAgencyError] = useState(false);
-
-  const [open, setOpen] = useState(false); // snackbar state
 
   const [trigger, result] = usePatchRouteMutation();
 
@@ -96,11 +94,14 @@ const EditRouteModal = ({ row, rows, setRows, closeModal }) => {
       for (const item of rows) {
         if (item.id === row.id) {
           setRows([...rows.filter((item) => item.id !== row.id), newData]);
+          enqueueSnackbar("Route edited successfully.", {
+            variant: "success",
+          });
           return;
         }
       }
     } catch (e) {
-      setOpen(true);
+      enqueueSnackbar("Error editing Route.", { variant: "error" });
     }
   };
 
@@ -108,7 +109,6 @@ const EditRouteModal = ({ row, rows, setRows, closeModal }) => {
     if (reason === "clickaway") {
       return;
     }
-    setOpen(false);
   };
 
   return (
@@ -211,16 +211,6 @@ const EditRouteModal = ({ row, rows, setRows, closeModal }) => {
           </Container>
         </form>
       </Container>
-      <Snackbar
-        open={open}
-        autoHideDuration={1000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Something went wrong please make sure the inputs are correct.
-        </Alert>
-      </Snackbar>
     </>
   );
 };

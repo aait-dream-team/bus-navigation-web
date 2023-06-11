@@ -8,10 +8,10 @@ import {
   Typography,
   Container,
   useTheme,
-  Snackbar,
   Alert,
 } from "@mui/material";
 import { useResetPasswordRequestMutation } from "state/api";
+import { enqueueSnackbar } from "notistack";
 
 const ResetPassword = () => {
   const theme = useTheme();
@@ -21,7 +21,6 @@ const ResetPassword = () => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
 
-  const [openSnackbar, setOpenSnackBar] = useState(false); // snackbar state
   const [trigger, result] = useResetPasswordRequestMutation();
 
   const handleInputChange = (event) => {
@@ -44,18 +43,16 @@ const ResetPassword = () => {
     try {
       localStorage.setItem("email", email);
       data = await trigger({ email }).unwrap();
-      console.log("Email With an OTP has been sent to your email.");
-      navigate("/changepassword", { replace: true })
+      navigate("/changepassword", { replace: true });
+      enqueueSnackbar("Email with an OTP has been sent to your email.", {
+        variant: "success",
+      });
     } catch (e) {
-      openSnackbar(true);
+      enqueueSnackbar(
+        "Unable to send the request, Make sure the email is in the system!",
+        { variant: "error" }
+      );
     }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    openSnackbar(false);
   };
 
   return (
@@ -138,15 +135,6 @@ const ResetPassword = () => {
           </Grid>
         </Grid>
       </Container>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={1000}
-        onClose={handleClose}
-      >
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Email or Password is Incorrect!
-        </Alert>
-      </Snackbar>
     </>
   );
 };

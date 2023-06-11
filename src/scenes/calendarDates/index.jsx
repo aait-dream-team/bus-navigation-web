@@ -16,6 +16,7 @@ import {
 } from "state/api";
 import { Link } from "react-router-dom";
 import EditCalendarDateModal from "modals/EditCalendarDateModal";
+import { enqueueSnackbar } from "notistack";
 
 const CalendarDates = () => {
   const theme = useTheme();
@@ -83,6 +84,9 @@ const CalendarDates = () => {
             onClick={(item) => {
               deleteCalendarDateTrigger({ id: params.id });
               setRows(data.filter((obj) => obj.id !== params.id));
+              enqueueSnackbar("Calendar date deleted successfully!", {
+                variant: "success",
+              });
             }}
           >
             Delete
@@ -131,7 +135,7 @@ const CalendarDates = () => {
             },
             "& .MuiDataGrid-virtualScroller": {
               backgroundColor: theme.palette.primary.light,
-              overflow: "hidden",
+              
             },
             "& .MuiDataGrid-footerContainer": {
               backgroundColor: theme.palette.background.alt,

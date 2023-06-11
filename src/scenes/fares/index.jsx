@@ -13,6 +13,7 @@ import FlexBetween from "components/FlexBetween";
 import { useListFaresQuery, useDeleteFareMutation } from "state/api";
 import { Link } from "react-router-dom";
 import EditFareModal from "modals/EditFareModal";
+import { enqueueSnackbar } from "notistack";
 
 const Fares = () => {
   const theme = useTheme();
@@ -90,6 +91,9 @@ const Fares = () => {
             onClick={(item) => {
               deleteFareTrigger({ id: params.id });
               setRows(data.filter((obj) => obj.id !== params.id));
+              enqueueSnackbar("Fare deleted successfully!", {
+                variant: "success",
+              });
             }}
           >
             Delete
@@ -138,7 +142,7 @@ const Fares = () => {
             },
             "& .MuiDataGrid-virtualScroller": {
               backgroundColor: theme.palette.primary.light,
-              overflow: "hidden",
+              
             },
             "& .MuiDataGrid-footerContainer": {
               backgroundColor: theme.palette.background.alt,

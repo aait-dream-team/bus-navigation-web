@@ -10,11 +10,10 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Alert,
-  Snackbar,
 } from "@mui/material";
 import Header from "components/Header";
 import { useCreateAdminMutation } from "state/api";
+import { enqueueSnackbar } from "notistack";
 
 const CreateAdmin = () => {
   const theme = useTheme();
@@ -23,8 +22,6 @@ const CreateAdmin = () => {
   const [username, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("");
-
-  const [open, setOpen] = useState(false); // snackbar state
 
   const [trigger, result] = useCreateAdminMutation();
 
@@ -39,16 +36,10 @@ const CreateAdmin = () => {
         user_type: userType,
       }).unwrap();
       navigate("/");
+      enqueueSnackbar("Admin created successfully!", { variant: "success" });
     } catch (e) {
-      setOpen(true);
+      enqueueSnackbar("Error in creating admin", { variant: "error" });
     }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
   };
 
   return (
@@ -119,11 +110,6 @@ const CreateAdmin = () => {
           </Box>
         </form>
       </Container>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Something Went Wrong, Please try again.
-        </Alert>
-      </Snackbar>
     </>
   );
 };

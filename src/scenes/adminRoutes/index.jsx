@@ -14,6 +14,7 @@ import FlexBetween from "components/FlexBetween";
 import { Link } from "react-router-dom";
 import { useListOfRoutesQuery, useDeleteRouteMutation } from "state/api";
 import EditRouteModal from "modals/EditRouteModal";
+import { enqueueSnackbar } from "notistack";
 
 const AdminRoutes = () => {
   const theme = useTheme();
@@ -91,6 +92,9 @@ const AdminRoutes = () => {
             onClick={(item) => {
               deleteRouteTrigger({ id: params.id });
               setRows(data.filter((obj) => obj.id !== params.id));
+              enqueueSnackbar("Route deleted successfully!", {
+                variant: "success",
+              });
             }}
           >
             Delete
@@ -139,7 +143,6 @@ const AdminRoutes = () => {
             },
             "& .MuiDataGrid-virtualScroller": {
               backgroundColor: theme.palette.primary.light,
-              overflow: "hidden",
             },
             "& .MuiDataGrid-footerContainer": {
               backgroundColor: theme.palette.background.alt,
@@ -192,7 +195,12 @@ const AdminRoutes = () => {
             p: 4,
           }}
         >
-          <EditRouteModal row={selectedRow} rows={rows} setRows={setRows} closeModal={handleClose}  />
+          <EditRouteModal
+            row={selectedRow}
+            rows={rows}
+            setRows={setRows}
+            closeModal={handleClose}
+          />
         </Box>
       </Modal>
     </>

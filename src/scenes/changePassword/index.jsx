@@ -8,10 +8,9 @@ import {
   Typography,
   Container,
   useTheme,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import { useResetPasswordMutation } from "state/api";
+import { enqueueSnackbar } from "notistack";
 
 const ChangePassword = () => {
   const theme = useTheme();
@@ -25,7 +24,6 @@ const ChangePassword = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
-  const [open, setOpen] = useState(false); // snackbar state
   const [trigger, result] = useResetPasswordMutation();
 
   const handleInputChange = (event) => {
@@ -63,19 +61,18 @@ const ChangePassword = () => {
 
     let data = undefined;
     try {
-      data = await trigger({ email : localStorage.getItem("email") , otp, password }).unwrap();
-      console.log("Password changed successfully");
+      data = await trigger({
+        email: localStorage.getItem("email"),
+        otp,
+        password,
+      }).unwrap();
       navigate("/login", { replace: true });
+      enqueueSnackbar("Password changed successfully", { variant: "success" });
     } catch (e) {
-      setOpen(true);
+      enqueueSnackbar("Error in changing password, please try again later!", {
+        variant: "error",
+      });
     }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
   };
 
   return (
@@ -189,11 +186,6 @@ const ChangePassword = () => {
           </Grid>
         </Grid>
       </Container>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Username or Password is Incorrect!
-        </Alert>
-      </Snackbar>
     </>
   );
 };

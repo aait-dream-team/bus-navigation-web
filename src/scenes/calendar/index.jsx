@@ -13,6 +13,7 @@ import FlexBetween from "components/FlexBetween";
 import { useListCalendarQuery, useDeleteCalendarMutation } from "state/api";
 import { Link } from "react-router-dom";
 import EditCalendarModal from "modals/EditCalendarModal";
+import { enqueueSnackbar } from "notistack";
 
 const Calendar = () => {
   const theme = useTheme();
@@ -115,6 +116,7 @@ const Calendar = () => {
             onClick={(item) => {
               deleteCalendarTrigger({ id: params.id });
               setRows(data.filter((obj) => obj.id !== params.id));
+              enqueueSnackbar('Calendar deleted successfully!', { variant: 'success' })
             }}
           >
             Delete
@@ -163,7 +165,7 @@ const Calendar = () => {
             },
             "& .MuiDataGrid-virtualScroller": {
               backgroundColor: theme.palette.primary.light,
-              overflow: "hidden",
+              
             },
             "& .MuiDataGrid-footerContainer": {
               backgroundColor: theme.palette.background.alt,

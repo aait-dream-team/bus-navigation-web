@@ -11,6 +11,7 @@ import Header from "components/Header";
 import FlexBetween from "components/FlexBetween";
 import { Link } from "react-router-dom";
 import { useListOfAgenciesQuery, useDeleteAgencyMutation } from "state/api";
+import { enqueueSnackbar } from "notistack";
 
 const Network = () => {
   const theme = useTheme();
@@ -71,6 +72,9 @@ const Network = () => {
             onClick={(item) => {
               deleteNetworkTrigger({ id: params.id });
               setRows(data.filter((obj) => obj.id !== params.id));
+              enqueueSnackbar("Network successfully deleted!", {
+                variant: "error",
+              });
             }}
           >
             Delete
@@ -103,7 +107,7 @@ const Network = () => {
           },
           "& .MuiDataGrid-virtualScroller": {
             backgroundColor: theme.palette.primary.light,
-            overflow: "hidden",
+            
           },
           "& .MuiDataGrid-footerContainer": {
             backgroundColor: theme.palette.background.alt,

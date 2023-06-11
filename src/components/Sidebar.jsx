@@ -11,6 +11,7 @@ import {
   ListItemText,
   Typography,
   useTheme,
+  Button,
 } from "@mui/material";
 import {
   SettingsOutlined,
@@ -26,7 +27,8 @@ import {
   CalendarViewDayTwoTone,
   Money,
   TransferWithinAStation,
-  TripOrigin
+  TripOrigin,
+  LogoutOutlined,
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
@@ -199,41 +201,26 @@ const Sidebar = ({
             </List>
           </Box>
 
-          <Box position="absolute" bottom="2rem" width="100%">
+          <Box position="absolute" bottom="2rem" width="100%" sx={{
+            display : "flex",
+            alignContent : "center",
+            justifyContent : "center"
+          }}>
             <Divider />
-            <ListItemButton
-              onClick={() => {
-                navigate(`/${"settings"}`);
-                setActive("settings");
-              }}
+            <Button
+              variant="outlined"
+              onClick={{}}
               sx={{
-                backgroundColor:
-                  active === "settings"
-                    ? theme.palette.secondary[300]
-                    : "transparent",
-                color:
-                  active === "settings"
-                    ? theme.palette.primary[600]
-                    : theme.palette.secondary[100],
+                color: theme.palette.secondary.main,
+                fontSize: "14px",
+                fontWeight: "bold",
+                padding: "10px 20px",
+                border : "none"
               }}
             >
-              <ListItemIcon
-                sx={{
-                  ml: "2rem",
-                  fontSize: "25px ",
-                  color:
-                    active === "settings"
-                      ? theme.palette.primary[600]
-                      : theme.palette.secondary[200],
-                }}
-              >
-                <SettingsOutlined />
-              </ListItemIcon>
-              <ListItemText primary="Settings" />
-              {active === "settings" && (
-                <ChevronRightOutlined sx={{ ml: "auto" }} />
-              )}
-            </ListItemButton>
+              <LogoutOutlined sx={{ marginRight : "20px"}}/>
+              Logout
+            </Button>
           </Box>
         </Drawer>
       )}

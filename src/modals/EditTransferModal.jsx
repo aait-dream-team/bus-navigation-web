@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  TextField,
-  Button,
-  useTheme,
-  Box,
-  Container,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { TextField, Button, useTheme, Box, Container } from "@mui/material";
 import Header from "components/Header";
 import { usePatchTransferMutation } from "state/api";
+import { enqueueSnackbar } from "notistack";
 
 const EditTransferModal = ({ row, rows, setRows, closeModal }) => {
   const theme = useTheme();
@@ -21,8 +14,6 @@ const EditTransferModal = ({ row, rows, setRows, closeModal }) => {
   const [transferType, setTransferType] = useState(row.transfer_type);
   const [minTransferTime, setMinTransferTime] = useState(row.min_transfer_time);
   const [admin, setAdmin] = useState(row.admin);
-
-  const [open, setOpen] = useState(false); // snackbar state
 
   const [trigger] = usePatchTransferMutation();
 
@@ -45,11 +36,16 @@ const EditTransferModal = ({ row, rows, setRows, closeModal }) => {
       for (const item of rows) {
         if (item.id === row.id) {
           setRows([...rows.filter((item) => item.id !== row.id), newData]);
+          enqueueSnackbar("Transfer edited successfully.", {
+            variant: "success",
+          });
           return;
         }
       }
     } catch (error) {
-      setOpen(true);
+      enqueueSnackbar("Error editing transfer.", {
+        variant: "error",
+      });
     }
   };
 
@@ -57,7 +53,6 @@ const EditTransferModal = ({ row, rows, setRows, closeModal }) => {
     if (reason === "clickaway") {
       return;
     }
-    setOpen(false);
   };
 
   return (
@@ -124,11 +119,6 @@ const EditTransferModal = ({ row, rows, setRows, closeModal }) => {
           </form>
         </Box>
       </Container>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Something went wrong please make sure the inputs are correct.
-        </Alert>
-      </Snackbar>
     </>
   );
 };
