@@ -23,6 +23,7 @@ import { enqueueSnackbar } from "notistack";
 const EditCalendarModal = ({ row, rows, setRows, closeModal }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  console.log(row);
 
   const [monday, setMonday] = useState(row.monday);
   const [tuesday, setTuesday] = useState(row.tuesday);
@@ -31,8 +32,8 @@ const EditCalendarModal = ({ row, rows, setRows, closeModal }) => {
   const [friday, setFriday] = useState(row.friday);
   const [saturday, setSaturday] = useState(row.saturday);
   const [sunday, setSunday] = useState(row.sunday);
-  const [startDate, setStartDate] = useState(dayjs(row.start_date));
-  const [endDate, setEndDate] = useState(dayjs(row.end_date));
+  const [startDate, setStartDate] = useState(row.start_date);
+  const [endDate, setEndDate] = useState(row.end_date);
   const [agency, setAgency] = useState(row.agency);
 
   const [trigger, result] = usePatchCalendarMutation();
@@ -87,8 +88,8 @@ const EditCalendarModal = ({ row, rows, setRows, closeModal }) => {
       friday,
       saturday,
       sunday,
-      start_date: startDate.format("YYYY-MM-DD").toString(),
-      end_date: endDate.format("YYYY-MM-DD").toString(),
+      start_date: startDate,
+      end_date: endDate,
       agency,
     };
     try {
@@ -219,8 +220,10 @@ const EditCalendarModal = ({ row, rows, setRows, closeModal }) => {
               <DatePicker
                 label="Start Date"
                 name="startDate"
-                value={startDate}
-                onChange={handleInputChange}
+                value={dayjs(startDate)}
+                onChange={(newValue) => {
+                  setStartDate(dayjs(newValue).format("YYYY-MM-DD").toString());
+                }}
                 required
               />
             </LocalizationProvider>
@@ -228,8 +231,10 @@ const EditCalendarModal = ({ row, rows, setRows, closeModal }) => {
               <DatePicker
                 label="End Date"
                 name="endDate"
-                value={endDate}
-                onChange={handleInputChange}
+                value={dayjs(endDate)}
+                onChange={(newValue) => {
+                  setEndDate(dayjs(newValue).format("YYYY-MM-DD").toString());
+                }}
                 required
               />
             </LocalizationProvider>

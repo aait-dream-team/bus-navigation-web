@@ -87,8 +87,8 @@ const AddCalendar = () => {
         friday,
         saturday,
         sunday,
-        start_date: startDate.format("YYYY-MM-DD").toString(),
-        end_date: endDate.format("YYYY-MM-DD").toString(),
+        start_date: startDate,
+        end_date: endDate,
         agency,
       }).unwrap();
       navigate("/calendars");
@@ -209,8 +209,10 @@ const AddCalendar = () => {
               <DatePicker
                 label="Start Date"
                 name="startDate"
-                value={startDate}
-                onChange={handleInputChange}
+                value={dayjs(startDate)}
+                onChange={(newValue) => {
+                  setStartDate(dayjs(newValue).format("YYYY-MM-DD").toString());
+                }}
                 required
               />
             </LocalizationProvider>
@@ -218,8 +220,10 @@ const AddCalendar = () => {
               <DatePicker
                 label="End Date"
                 name="endDate"
-                value={endDate}
-                onChange={handleInputChange}
+                value={dayjs(endDate)}
+                onChange={(newValue) => {
+                  setEndDate(dayjs(newValue).format("YYYY-MM-DD").toString());
+                }}
                 required
               />
             </LocalizationProvider>
