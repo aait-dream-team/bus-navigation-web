@@ -34,6 +34,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import FlexBetween from "./FlexBetween";
+import LogoutButton from "./Navbar"
 
 let navItems = [];
 
@@ -209,7 +210,7 @@ const Sidebar = ({
             <Divider />
             <Button
               variant="outlined"
-              onClick={{}}
+              onClick={() => console.log("Hello")}
               sx={{
                 color: theme.palette.secondary.main,
                 fontSize: "14px",

@@ -13,6 +13,8 @@ const EditTripModal = ({ row, rows, setRows, closeModal }) => {
   const [shortName, setShortName] = useState(row.short_name);
   const [direction, setDirection] = useState(row.direction);
   const [agency, setAgency] = useState(row.agency);
+  const [shape, setShape] = useState(row.shape);
+  const [route, setRoute] = useState(row.route);
 
   const [trigger, result] = usePatchTripMutation();
 
@@ -26,6 +28,8 @@ const EditTripModal = ({ row, rows, setRows, closeModal }) => {
       short_name: shortName,
       direction: direction,
       agency: agency,
+      shape: shape,
+      route: route,
     };
     try {
       data = await trigger(newData).unwrap();
@@ -88,9 +92,21 @@ const EditTripModal = ({ row, rows, setRows, closeModal }) => {
               required
             />
             <TextField
-              label="Agency"
+              label="Agency Id"
               value={agency}
               onChange={(event) => setAgency(event.target.value)}
+              required
+            />
+            <TextField
+              label="Route Id"
+              value={route}
+              onChange={(event) => setRoute(event.target.value)}
+              required
+            />
+            <TextField
+              label="Shape Id"
+              value={shape}
+              onChange={(event) => setShape(event.target.value)}
               required
             />
           </Box>

@@ -13,6 +13,8 @@ const AddTrip = () => {
   const [shortName, setShortName] = useState("");
   const [direction, setDirection] = useState("");
   const [agency, setAgency] = useState("");
+  const [shape, setShape] = useState("");
+  const [route, setRoute] = useState("");
 
   const [trigger, result] = useCreateTripMutation();
 
@@ -26,6 +28,8 @@ const AddTrip = () => {
         short_name: shortName,
         direction: direction,
         agency: agency,
+        shape: shape,
+        route: route,
       }).unwrap();
       navigate("/trips");
       enqueueSnackbar("Trip successfully created!", { variant: "success" });
@@ -76,9 +80,21 @@ const AddTrip = () => {
               required
             />
             <TextField
-              label="Agency"
+              label="Agency Id"
               value={agency}
               onChange={(event) => setAgency(event.target.value)}
+              required
+            />
+            <TextField
+              label="Route Id"
+              value={route}
+              onChange={(event) => setRoute(event.target.value)}
+              required
+            />
+            <TextField
+              label="Shape Id"
+              value={shape}
+              onChange={(event) => setShape(event.target.value)}
               required
             />
           </Box>
