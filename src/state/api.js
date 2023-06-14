@@ -356,6 +356,45 @@ export const api = createApi({
         body: data,
       }),
     }),
+    listOfShapes: build.query({
+      query: (data) => ({
+        url: "shapes/",
+        method: "GET",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    deleteShape: build.mutation({
+      query: (data) => ({
+        url: `shapes/${data.id}/`,
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    createShape: build.mutation({
+      query: (data) => ({
+        url: `shapes/`,
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    updateShape: build.mutation({
+      query: (data) => ({
+        url: `shapes/${data.id}/`,
+        method: "PUT",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -369,6 +408,10 @@ export const {
   useListFaresQuery,
   useListTransfersQuery,
   useListTripsQuery,
+  useListOfShapesQuery,
+  useDeleteShapeMutation,
+  useCreateShapeMutation,
+  useUpdateShapeMutation,
   useCreateRouteMutation,
   useCreateTerminalMutation,
   useCreateAgencyMutation,

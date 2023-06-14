@@ -34,6 +34,8 @@ import Trips from "scenes/trip";
 import AddTrip from "scenes/addTrip";
 import ResetPassword from "scenes/restPassword";
 import ChangePassword from "scenes/changePassword";
+import Shape from "scenes/shape";
+import AddShape from "scenes/addShape";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
@@ -109,7 +111,7 @@ function App() {
                   userType === "admin" ? (
                     <Navigate to="/routes" replace />
                   ) : userType === "superadmin" ? (
-                    <Navigate to="/overview" replace />
+                    <Navigate to="/routes" replace />
                   ) : (
                     <Navigate to="/login" replace />
                   )
@@ -149,13 +151,14 @@ function App() {
                   <Route path="/addtransfer" element={<AddTransfer />} />
                   <Route path="/trips" element={<Trips />} />
                   <Route path="/addtrip" element={<AddTrip />} />
+                  <Route path="/shapes" element={<Shape />} />
+                  <Route path="/addshape" element={<AddShape />} />
                 </>
               )}
 
               {/* super admin Routes */}
               {userType === "superadmin" && (
                 <>
-                  <Route path="/overview" element={<Overview />} />
                   <Route path="/network" element={<Network />} />
                   <Route path="/createAdmin" element={<CreateAdmin />} />
                 </>

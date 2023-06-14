@@ -3,22 +3,22 @@ import {
   Box,
   useTheme,
   Button,
-  Container,
   CircularProgress,
+  Container,
   Modal,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Header from "components/Header";
 import FlexBetween from "components/FlexBetween";
-import { useListCalendarQuery, useDeleteCalendarMutation } from "state/api";
 import { Link } from "react-router-dom";
-import EditCalendarModal from "modals/EditCalendarModal";
+import { useListOfShapesQuery, useDeleteShapeMutation } from "state/api";
 import { enqueueSnackbar } from "notistack";
+import EditShapeModal from "modals/EditShapeModal";
 
-const Calendar = () => {
+const Shape = () => {
   const theme = useTheme();
-  const { data, isLoading } = useListCalendarQuery();
-  const [deleteCalendarTrigger, result] = useDeleteCalendarMutation();
+  const { data, isLoading } = useListOfShapesQuery();
+  const [deleteShapeTrigger, { error }] = useDeleteShapeMutation();
   const [rows, setRows] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -37,53 +37,23 @@ const Calendar = () => {
       flex: 1,
     },
     {
-      field: "monday",
-      headerName: "Monday",
+      field: "shape_pt_lat",
+      headerName: "Latitude",
       flex: 1,
     },
     {
-      field: "tuesday",
-      headerName: "Tuesday",
+      field: "shape_pt_lon",
+      headerName: "Longitude",
       flex: 1,
     },
     {
-      field: "wednesday",
-      headerName: "Wednesday",
+      field: "shape_pt_sequence",
+      headerName: "Sequence",
       flex: 1,
     },
     {
-      field: "thursday",
-      headerName: "Thursday",
-      flex: 1,
-    },
-    {
-      field: "friday",
-      headerName: "Friday",
-      flex: 1,
-    },
-    {
-      field: "saturday",
-      headerName: "Saturday",
-      flex: 1,
-    },
-    {
-      field: "sunday",
-      headerName: "Sunday",
-      flex: 1,
-    },
-    {
-      field: "start_date",
-      headerName: "Start Date",
-      flex: 1,
-    },
-    {
-      field: "end_date",
-      headerName: "End Date",
-      flex: 1,
-    },
-    {
-      field: "agency",
-      headerName: "Agency",
+      field: "shape_dist_traveled",
+      headerName: "Distance Traveled",
       flex: 1,
     },
     {
@@ -118,10 +88,20 @@ const Calendar = () => {
               borderColor: "red",
             }}
             size="small"
-            onClick={(item) => {
-              deleteCalendarTrigger({ id: params.id });
+            onClick={async (item) => {
+              try {
+                await deleteShapeTrigger({ id: params.id }).unwrap();
+              } catch (error) {
+                enqueueSnackbar(
+                  "Error deleting shape, Make sure no trip is using the shape!",
+                  { variant: "error" }
+                );
+                return;
+              }
               setRows(data.filter((obj) => obj.id !== params.id));
-              enqueueSnackbar('Calendar deleted successfully!', { variant: 'success' })
+              enqueueSnackbar("Shape deleted successfully!", {
+                variant: "success",
+              });
             }}
           >
             Delete
@@ -135,9 +115,9 @@ const Calendar = () => {
     <>
       <Box m="1.5rem 2.5rem">
         <FlexBetween>
-          <Header title="Calendar" subtitle="List of Calendar Dates" />
+          <Header title="Shapes" subtitle="List Of Shapes" />
           <Box>
-            <Link to="/addcalendar">
+            <Link to="/addShape">
               <Button
                 variant="outlined"
                 sx={{
@@ -147,7 +127,7 @@ const Calendar = () => {
                   padding: "10px 20px",
                 }}
               >
-                Add Calendar
+                Add Shape
               </Button>
             </Link>
           </Box>
@@ -170,7 +150,6 @@ const Calendar = () => {
             },
             "& .MuiDataGrid-virtualScroller": {
               backgroundColor: theme.palette.primary.light,
-              
             },
             "& .MuiDataGrid-footerContainer": {
               backgroundColor: theme.palette.background.alt,
@@ -196,7 +175,7 @@ const Calendar = () => {
             </Container>
           ) : (
             <DataGrid
-              loading={isLoading || !data}
+              loading={isLoading}
               getRowId={(row) => row.id}
               rows={rows || []}
               columns={columns}
@@ -223,7 +202,7 @@ const Calendar = () => {
             p: 4,
           }}
         >
-          <EditCalendarModal
+          <EditShapeModal
             row={selectedRow}
             rows={rows}
             setRows={setRows}
@@ -235,4 +214,4 @@ const Calendar = () => {
   );
 };
 
-export default Calendar;
+export default Shape;

@@ -134,8 +134,8 @@ const AddCalendarDate = () => {
                   exceptionTypeError ? "Exception type is required" : ""
                 }
               >
-                <MenuItem value="Added">Added</MenuItem>
-                <MenuItem value="Removed">Removed</MenuItem>
+                <MenuItem value="a">Added</MenuItem>
+                <MenuItem value="r">Removed</MenuItem>
               </Select>
             </FormControl>
           </Box>

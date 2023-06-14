@@ -20,7 +20,6 @@ const CreateAdmin = () => {
   const navigate = useNavigate();
 
   const [username, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("");
 
   const [trigger, result] = useCreateAdminMutation();
@@ -32,7 +31,7 @@ const CreateAdmin = () => {
     try {
       data = await trigger({
         username: username,
-        password: password,
+        password: crypto.randomUUID(),
         user_type: userType,
       }).unwrap();
       navigate("/");
@@ -71,13 +70,6 @@ const CreateAdmin = () => {
               value={username}
               onChange={(event) => setEmail(event.target.value)}
               required
-            />
-            <TextField
-              label="Admin Password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-              type="password"
             />
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">User Type</InputLabel>

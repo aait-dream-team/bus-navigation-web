@@ -39,7 +39,7 @@ const EditCalendarDateModal = ({ row, rows, setRows, closeModal }) => {
       setServiceError(false);
     }
     if (name === "date") {
-      console.log(value);
+      setDate(dayjs(value));
       setDateError(false);
     }
     if (name === "exceptionType") {
@@ -55,10 +55,6 @@ const EditCalendarDateModal = ({ row, rows, setRows, closeModal }) => {
       setServiceError(true);
       return;
     }
-    if (date === "") {
-      setDateError(true);
-      return;
-    }
     if (exceptionType === "") {
       setExceptionTypeError(true);
       return;
@@ -68,7 +64,7 @@ const EditCalendarDateModal = ({ row, rows, setRows, closeModal }) => {
     let newData = {
       id: row.id,
       service,
-      date,
+      date : date.format("YYYY-MM-DD").toString(),
       exception_type: exceptionType,
     };
     try {
@@ -127,7 +123,7 @@ const EditCalendarDateModal = ({ row, rows, setRows, closeModal }) => {
                 name="date"
                 value={date}
                 onChange={(newValue) => {
-                  setDate(dayjs(newValue).format("YYYY-MM-DD").toString());
+                  setDate(dayjs(newValue));
                 }}
                 error={dateError}
                 helperText={dateError ? "Date is required" : ""}
@@ -147,8 +143,8 @@ const EditCalendarDateModal = ({ row, rows, setRows, closeModal }) => {
                   exceptionTypeError ? "Exception type is required" : ""
                 }
               >
-                <MenuItem value="Added">Added</MenuItem>
-                <MenuItem value="Removed">Removed</MenuItem>
+                <MenuItem value="a">Added</MenuItem>
+                <MenuItem value="r">Removed</MenuItem>
               </Select>
             </FormControl>
           </Box>

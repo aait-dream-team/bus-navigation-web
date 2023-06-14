@@ -25,10 +25,9 @@ import {
   ControlPointOutlined,
   CalendarMonth,
   CalendarViewDayTwoTone,
-  Money,
-  TransferWithinAStation,
   TripOrigin,
   LogoutOutlined,
+  ShapeLineOutlined
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
@@ -61,20 +60,16 @@ const Sidebar = ({
         icon: <SignpostOutlined />,
       },
       {
-        text: "CalendarDates",
-        icon: <CalendarViewDayTwoTone />,
-      },
-      {
         text: "Calendars",
         icon: <CalendarMonth />,
       },
       {
-        text: "Fares",
-        icon: <Money />,
+        text: "CalendarDates",
+        icon: <CalendarViewDayTwoTone />,
       },
       {
-        text: "Transfers",
-        icon: <TransferWithinAStation />,
+        text: "Shapes",
+        icon: <ShapeLineOutlined />,
       },
       {
         text: "Trips",
@@ -89,10 +84,6 @@ const Sidebar = ({
 
   if (userType === "superadmin") {
     navItems = [
-      {
-        text: "Overview",
-        icon: <DashboardOutlined />,
-      },
       {
         text: "Routes",
         icon: <RouteOutlined />,

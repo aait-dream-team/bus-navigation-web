@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, useTheme, Box, Container } from "@mui/material";
+import {
+  TextField,
+  Button,
+  useTheme,
+  Box,
+  Container,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import Header from "components/Header";
 import { usePatchTripMutation } from "state/api";
 import { enqueueSnackbar } from "notistack";
@@ -85,12 +95,19 @@ const EditTripModal = ({ row, rows, setRows, closeModal }) => {
               onChange={(event) => setShortName(event.target.value)}
               required
             />
-            <TextField
-              label="Direction"
-              value={direction}
-              onChange={(event) => setDirection(event.target.value)}
-              required
-            />
+            <FormControl>
+              <InputLabel>Direction</InputLabel>
+              <Select
+                name="direction"
+                label="Direction"
+                value={direction}
+                onChange={(event) => setDirection(event.target.value)}
+                required
+              >
+                <MenuItem value="true">Outbound</MenuItem>
+                <MenuItem value="false">Inbound</MenuItem>
+              </Select>
+            </FormControl>
             <TextField
               label="Agency Id"
               value={agency}
