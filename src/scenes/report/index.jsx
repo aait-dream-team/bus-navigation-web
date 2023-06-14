@@ -14,10 +14,11 @@ import {
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import Header from "components/Header";
 import { useCreateReportMutation } from "state/api";
 import dayjs from "dayjs";
+import { enqueueSnackbar } from "notistack";
 
 const Report = () => {
   const theme = useTheme();
@@ -26,45 +27,50 @@ const Report = () => {
   const [affectedEntity, setAffectedEntity] = useState("");
   const [affectedEntityError, setAffectedEntityError] = useState(false);
   const [entityId, setEntityId] = useState("");
-  const [entityIdError, setEntityIdError] = useState(false);
   const [cause, setCause] = useState("");
   const [causeError, setCauseError] = useState(false);
   const [effect, setEffect] = useState("");
   const [effectError, setEffectError] = useState(false);
   const [duration, setDuration] = useState("");
   const [durationError, setDurationError] = useState(false);
-  const [startTimestamp, setStartTimestamp] = useState(
-    dayjs("2021-10-10T00:00:00")
-  );
+  const [startTimestamp, setStartTimestamp] = useState("");
   const [startTimestampError, setStartTimestampError] = useState(false);
+  const [agencyId, setAgencyId] = useState("");
+  const [agencyIdError, setAgencyIdError] = useState(false);
+  const [routeId, setRouteId] = useState("");
+  const [routeIdError, setRouteIdError] = useState(false);
+  const [tripId, setTripId] = useState("");
+  const [tripIdError, setTripIdError] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messageError, setMessageError] = useState(false);
 
   const [trigger, result] = useCreateReportMutation();
 
   const causes = [
-    "UNKNOWN_CAUSE",
-    "OTHER_CAUSE",
-    "TECHNICAL_PROBLEM",
-    "STRIKE",
-    "DEMONSTRATION",
-    "ACCIDENT",
-    "HOLIDAY",
-    "WEATHER",
-    "MAINTENANCE",
-    "CONSTRUCTION",
-    "POLICE_ACTIVITY",
-    "MEDICAL_EMERGENCY",
+    [1, "UNKNOWN_CAUSE"],
+    [2, "OTHER_CAUSE"],
+    [3, "TECHNICAL_PROBLEM"],
+    [4, "STRIKE"],
+    [5, "DEMONSTRATION"],
+    [6, "ACCIDENT"],
+    [7, "HOLIDAY"],
+    [8, "WEATHER"],
+    [9, "MAINTENANCE"],
+    [10, "CONSTRUCTION"],
+    [11, "POLICE_ACTIVITY"],
+    [12, "MEDICAL_EMERGENCY"],
   ];
 
   const effects = [
-    "NO_SERVICE",
-    "REDUCED_SERVICE",
-    "SIGNIFICANT_DELAYS",
-    "DETOUR",
-    "ADDITIONAL_SERVICE",
-    "MODIFIED_SERVICE",
-    "OTHER_EFFECT",
-    "UNKNOWN_EFFECT",
-    "STOP_MOVED",
+    [1, "NO_SERVICE"],
+    [2, "REDUCED_SERVICE"],
+    [3, "SIGNIFICANT_DELAYS"],
+    [4, "DETOUR"],
+    [5, "ADDITIONAL_SERVICE"],
+    [6, "MODIFIED_SERVICE"],
+    [7, "OTHER_EFFECT"],
+    [8, "UNKNOWN_EFFECT"],
+    [9, "STOP_MOVED"],
   ];
 
   const handleInputChange = (event) => {
@@ -74,9 +80,17 @@ const Report = () => {
         setAffectedEntity(value);
         setAffectedEntityError(false);
         break;
-      case "entityId":
-        setEntityId(value);
-        setEntityIdError(false);
+      case "agencyId":
+        setAgencyId(value);
+        setAgencyIdError(false);
+        break;
+      case "routeId":
+        setRouteId(value);
+        setRouteIdError(false);
+        break;
+      case "tripId":
+        setTripId(value);
+        setTripIdError(false);
         break;
       case "cause":
         setCause(value);
@@ -90,29 +104,21 @@ const Report = () => {
         setDuration(value);
         setDurationError(false);
         break;
-      default:
+      case "startTimestamp":
+        setStartTimestamp(value);
+        setStartTimestampError(false);
+        break;
+      case "message":
+        setMessage(value);
+        setMessageError(false);
         break;
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(
-      affectedEntity,
-      entityId,
-      cause,
-      effect,
-      duration,
-      startTimestamp
-    );
-
     if (affectedEntity === "") {
       setAffectedEntityError(true);
-      return;
-    }
-
-    if (entityId === "") {
-      setEntityIdError(true);
       return;
     }
 
@@ -136,23 +142,47 @@ const Report = () => {
       return;
     }
 
+    if (agencyId === "" && affectedEntity === "agency") {
+      setAgencyIdError(true);
+      return;
+    }
+
+    if (routeId === "" && affectedEntity === "route") {
+      setRouteIdError(true);
+      return;
+    }
+
+    if (tripId === "" && affectedEntity === "trip") {
+      setTripIdError(true);
+      return;
+    }
+
+    if (message === "") {
+      setMessageError(true);
+      return;
+    }
+
     // Handle form submission
-    console.log("Submitting form...");
     let data = undefined;
     try {
       data = await trigger({
         affected_entity: affectedEntity,
-        entity_id: entityId,
+        route_id: routeId,
+        trip_id: tripId,
+        agency_id: agencyId,
+        message: message,
         cause: cause,
         effect: effect,
         duration: duration,
-        start_timestamp: startTimestamp.format("HH:mm:ss"),
+        start_timestamp: startTimestamp.format("YYYY-MM-DDTHH:mm:ssZ"),
       }).unwrap();
       navigate("/");
+      enqueueSnackbar("Report submitted successfully", { variant: "success" });
     } catch (e) {
+      enqueueSnackbar("Error submitting report", { variant: "error" });
     }
   };
-  
+
   return (
     <>
       <Container
@@ -198,15 +228,42 @@ const Report = () => {
                 <MenuItem value="trip">trip</MenuItem>
               </Select>
             </FormControl>
-            <TextField
-              label="Entity ID"
-              value={entityId}
-              name="entityId"
-              onChange={handleInputChange}
-              required
-              error={entityIdError}
-              helperText={entityIdError ? "Entity ID is required" : ""}
-            />
+            {
+              // If affected entity is route, show route id
+              affectedEntity === "route" ? (
+                <TextField
+                  label="Route ID"
+                  value={routeId}
+                  name="routeId"
+                  onChange={handleInputChange}
+                  required
+                  error={routeIdError}
+                  helperText={routeIdError ? "Route Id is required" : ""}
+                />
+              ) : affectedEntity === "agency" ? (
+                <TextField
+                  label="Agency ID"
+                  value={agencyId}
+                  name="agencyId"
+                  onChange={handleInputChange}
+                  required
+                  error={agencyIdError}
+                  helperText={agencyIdError ? "Agency Id is required" : ""}
+                />
+              ) : affectedEntity === "trip" ? (
+                <TextField
+                  label="Trip ID"
+                  value={tripId}
+                  name="tripId"
+                  onChange={handleInputChange}
+                  required
+                  error={tripIdError}
+                  helperText={tripIdError ? "Trip Id is required" : ""}
+                />
+              ) : (
+                <></>
+              )
+            }
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Cause </InputLabel>
               <Select
@@ -220,7 +277,7 @@ const Report = () => {
                 helperText={causeError ? "Cause is required" : ""}
               >
                 {causes.map((cause) => (
-                  <MenuItem value={cause}>{cause}</MenuItem>
+                  <MenuItem value={cause[0]}>{cause[1]}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -237,7 +294,7 @@ const Report = () => {
                 helperText={effectError ? "Effect is required" : ""}
               >
                 {effects.map((effect) => (
-                  <MenuItem value={effect}>{effect}</MenuItem>
+                  <MenuItem value={effect[0]}>{effect[1]}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -251,14 +308,13 @@ const Report = () => {
               helperText={durationError ? "Duration is required" : ""}
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <TimePicker
+              <DateTimePicker
                 clearable
                 ampm={false}
                 label="Start Timestamp"
                 value={startTimestamp}
                 name="startTimestamp"
                 onChange={(newValue) => {
-                  console.log(newValue);
                   setStartTimestamp(dayjs(newValue));
                 }}
                 required
@@ -268,6 +324,18 @@ const Report = () => {
                 }
               />
             </LocalizationProvider>
+            <TextField
+              label="Message"
+              value={message}
+              name="message"
+              multiline={true}
+              minRows={3}
+              maxRows={10}
+              onChange={handleInputChange}
+              required
+              error={messageError}
+              helperText={messageError ? "Message is required" : ""}
+            />
           </Box>
           <Box display="grid" justifyContent="center" gap={2} mt="2rem">
             <Button
