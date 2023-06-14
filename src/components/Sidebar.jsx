@@ -27,7 +27,8 @@ import {
   CalendarViewDayTwoTone,
   TripOrigin,
   LogoutOutlined,
-  ShapeLineOutlined
+  ShapeLineOutlined,
+  TimeToLeaveOutlined,
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
@@ -58,6 +59,10 @@ const Sidebar = ({
       {
         text: "Terminal",
         icon: <SignpostOutlined />,
+      },
+      {
+        text : "StopTime",
+        icon : <TimeToLeaveOutlined />
       },
       {
         text: "Calendars",

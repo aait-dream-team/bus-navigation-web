@@ -14,7 +14,6 @@ import AdminRoutes from "scenes/adminRoutes";
 import Terminal from "scenes/terminal";
 import Report from "scenes/report";
 import Settings from "scenes/settings";
-import Overview from "scenes/overview";
 import SuperadminRoutes from "scenes/superadminRoutes";
 import CreateAdmin from "scenes/createAdmin";
 import AddRoute from "scenes/addRoute";
@@ -36,6 +35,8 @@ import ResetPassword from "scenes/restPassword";
 import ChangePassword from "scenes/changePassword";
 import Shape from "scenes/shape";
 import AddShape from "scenes/addShape";
+import StopTime from "scenes/stopTime";
+import AddStopTime from "scenes/addStoptime";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
@@ -153,6 +154,8 @@ function App() {
                   <Route path="/addtrip" element={<AddTrip />} />
                   <Route path="/shapes" element={<Shape />} />
                   <Route path="/addshape" element={<AddShape />} />
+                  <Route path="/stoptime" element={<StopTime />} />
+                  <Route path="/addstoptime" element={<AddStopTime />} />
                 </>
               )}
 

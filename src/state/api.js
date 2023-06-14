@@ -395,6 +395,45 @@ export const api = createApi({
         },
       }),
     }),
+    listOfStopTimes: build.query({
+      query: (data) => ({
+        url: `stop_times/`,
+        method: "GET",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    deleteStopTimes: build.mutation({
+      query: (data) => ({
+        url: `stop_times/${data.id}/`,
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    createStopTime: build.mutation({
+      query: (data) => ({
+        url: `stop_times/`,
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
+    updateStopTime: build.mutation({
+      query: (data) => ({
+        url: `stop_times/${data.id}/`,
+        method: "PUT",
+        body: data,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -440,4 +479,8 @@ export const {
   usePatchTripMutation,
   useResetPasswordRequestMutation,
   useResetPasswordMutation,
+  useListOfStopTimesQuery,
+  useDeleteStopTimesMutation,
+  useCreateStopTimeMutation,
+  useUpdateStopTimeMutation,
 } = api;
