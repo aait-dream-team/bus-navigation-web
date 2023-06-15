@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
@@ -17,13 +17,21 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Header from "components/Header";
-import { usePatchCalendarMutation } from "state/api";
+import { usePatchCalendarMutation, useListOfAgenciesQuery } from "state/api";
 import { enqueueSnackbar } from "notistack";
 
 const EditCalendarModal = ({ row, rows, setRows, closeModal }) => {
   const theme = useTheme();
   const navigate = useNavigate();
-  console.log(row);
+
+  // dropdown list of agencies
+  const { data: rowAgencyList, isLoading } = useListOfAgenciesQuery();
+  const [agencyList, setAgencyList] = useState([]);
+  useEffect(() => {
+    if (rowAgencyList) {
+      setAgencyList(rowAgencyList);
+    }
+  }, [rowAgencyList]);
 
   const [monday, setMonday] = useState(row.monday);
   const [tuesday, setTuesday] = useState(row.tuesday);
@@ -238,13 +246,22 @@ const EditCalendarModal = ({ row, rows, setRows, closeModal }) => {
                 required
               />
             </LocalizationProvider>
-            <TextField
-              label="Agency"
-              name="agency"
-              value={agency}
-              onChange={handleInputChange}
-              required
-            />
+            <FormControl>
+              <InputLabel>Agency</InputLabel>
+              <Select
+                name="agency"
+                label="Agency"
+                value={agency}
+                onChange={handleInputChange}
+                required
+              >
+                {agencyList.map((agency) => (
+                  <MenuItem key={agency.id} value={agency.id}>
+                    {agency.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
           <Box display="grid" justifyContent="center" gap={2} mt="2rem">
             <Button

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
@@ -11,18 +11,52 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import Header from "components/Header";
-import { useCreateReportMutation } from "state/api";
+import {
+  useCreateReportMutation,
+  useListOfAgenciesQuery,
+  useListTripsQuery,
+  useListOfRoutesQuery,
+} from "state/api";
 import dayjs from "dayjs";
 import { enqueueSnackbar } from "notistack";
 
 const Report = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+
+  // dropdown list of agencies
+  const { data: rawAgencyList, isLoading: isAgencyListLoading } =
+    useListOfAgenciesQuery();
+  const [agencyList, setAgencyList] = useState([]);
+  useEffect(() => {
+    if (rawAgencyList) {
+      setAgencyList(rawAgencyList);
+    }
+  }, [rawAgencyList]);
+
+  // dropdown list of routes
+  const { data: rawRouteList, isLoading: isRouteListLoading } =
+    useListOfRoutesQuery();
+  const [routeList, setRouteList] = useState([]);
+  useEffect(() => {
+    if (rawRouteList) {
+      setRouteList(rawRouteList);
+    }
+  }, [rawRouteList]);
+
+  // dropdown list of trips
+  const { data: rawTripList, isLoading: isTripListLoading } =
+    useListTripsQuery();
+  const [tripList, setTripList] = useState([]);
+  useEffect(() => {
+    if (rawTripList) {
+      setTripList(rawTripList);
+    }
+  }, [rawTripList]);
 
   const [affectedEntity, setAffectedEntity] = useState("");
   const [affectedEntityError, setAffectedEntityError] = useState(false);
@@ -231,35 +265,58 @@ const Report = () => {
             {
               // If affected entity is route, show route id
               affectedEntity === "route" ? (
-                <TextField
-                  label="Route ID"
-                  value={routeId}
-                  name="routeId"
-                  onChange={handleInputChange}
-                  required
-                  error={routeIdError}
-                  helperText={routeIdError ? "Route Id is required" : ""}
-                />
+                <FormControl>
+                  <InputLabel>Route</InputLabel>
+                  <Select
+                    name="routeId"
+                    label="Route"
+                    value={routeId}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    {routeList.map((route) => (
+                      <MenuItem key={route.id} value={route.id}>
+                        {route.route_short_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               ) : affectedEntity === "agency" ? (
-                <TextField
-                  label="Agency ID"
-                  value={agencyId}
-                  name="agencyId"
-                  onChange={handleInputChange}
-                  required
-                  error={agencyIdError}
-                  helperText={agencyIdError ? "Agency Id is required" : ""}
-                />
+                <FormControl>
+                  <InputLabel>Agency</InputLabel>
+                  <Select
+                    name="agencyId"
+                    label="agencyId"
+                    value={agencyId}
+                    onChange={handleInputChange}
+                    required
+                    error={agencyIdError}
+                  >
+                    {agencyList.map((agency) => (
+                      <MenuItem key={agency.id} value={agency.id}>
+                        {agency.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               ) : affectedEntity === "trip" ? (
-                <TextField
-                  label="Trip ID"
-                  value={tripId}
-                  name="tripId"
-                  onChange={handleInputChange}
-                  required
-                  error={tripIdError}
-                  helperText={tripIdError ? "Trip Id is required" : ""}
-                />
+                <FormControl>
+                  <InputLabel>Trip</InputLabel>
+                  <Select
+                    name="tripId"
+                    label="TripId"
+                    value={tripId}
+                    onChange={handleInputChange}
+                    required
+                    error={tripIdError}
+                  >
+                    {tripList.map((trip) => (
+                      <MenuItem key={trip.id} value={trip.id}>
+                        {trip.short_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               ) : (
                 <></>
               )

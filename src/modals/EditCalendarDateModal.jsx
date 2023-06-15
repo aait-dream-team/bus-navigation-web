@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
@@ -16,12 +16,21 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Header from "components/Header";
-import { usePatchCalendarDateMutation } from "state/api";
+import { usePatchCalendarDateMutation, useListCalendarQuery } from "state/api";
 import { enqueueSnackbar } from "notistack";
 
 const EditCalendarDateModal = ({ row, rows, setRows, closeModal }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+
+    // dropdown list of calendar
+    const { data: rawCalendarList, isLoading } = useListCalendarQuery();
+    const [calendarList, setCalendarList] = useState([]);
+    useEffect(() => {
+      if (rawCalendarList) {
+        setCalendarList(rawCalendarList);
+      }
+    }, [rawCalendarList]);
 
   const [service, setService] = useState(row.service);
   const [serviceError, setServiceError] = useState(false);
@@ -109,14 +118,23 @@ const EditCalendarDateModal = ({ row, rows, setRows, closeModal }) => {
         </Box>
         <form onSubmit={handleSubmit}>
           <Box display="grid" gridTemplateColumns="repeat(1, 1fr)" gap={2}>
-            <TextField
-              label="Service"
-              name="service"
-              value={service}
-              onChange={handleInputChange}
-              error={serviceError}
-              helperText={serviceError ? "Service is required" : ""}
-            />
+          <FormControl>
+              <InputLabel>Service</InputLabel>
+              <Select
+                name="service"
+                label="Service"
+                value={service}
+                onChange={handleInputChange}
+                required
+                error={serviceError}
+              >
+                {calendarList.map((calendar) => (
+                  <MenuItem key={calendar.id} value={calendar.id}>
+                    {calendar.id}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Date"

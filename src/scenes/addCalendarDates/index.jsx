@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
@@ -16,12 +16,21 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Header from "components/Header";
-import { useCreateCalendarDateMutation } from "state/api";
+import { useCreateCalendarDateMutation, useListCalendarQuery } from "state/api";
 import { enqueueSnackbar } from "notistack";
 
 const AddCalendarDate = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+
+  // dropdown list of calendar
+  const { data: rawCalendarList, isLoading } = useListCalendarQuery();
+  const [calendarList, setCalendarList] = useState([]);
+  useEffect(() => {
+    if (rawCalendarList) {
+      setCalendarList(rawCalendarList);
+    }
+  }, [rawCalendarList]);
 
   const [service, setService] = useState("");
   const [serviceError, setServiceError] = useState(false);
@@ -67,13 +76,13 @@ const AddCalendarDate = () => {
     try {
       await trigger({
         service,
-        date,
+        date : date.format("YYYY-MM-DD").toString(),
         exception_type: exceptionType,
       }).unwrap();
       navigate("/calendardates");
-      enqueueSnackbar('Calendar date created', { variant: 'success' })
+      enqueueSnackbar("Calendar date created", { variant: "success" });
     } catch (e) {
-      enqueueSnackbar('Error creating calendar date', { variant: 'error' })
+      enqueueSnackbar("Error creating calendar date", { variant: "error" });
     }
   };
 
@@ -100,24 +109,32 @@ const AddCalendarDate = () => {
         </Box>
         <form onSubmit={handleSubmit}>
           <Box display="grid" gridTemplateColumns="repeat(1, 1fr)" gap={2}>
-            <TextField
-              label="Service"
-              name="service"
-              value={service}
-              onChange={handleInputChange}
-              error={serviceError}
-              helperText={serviceError ? "Service is required" : ""}
-            />
+            <FormControl>
+              <InputLabel>Service</InputLabel>
+              <Select
+                name="service"
+                label="Service"
+                value={service}
+                onChange={handleInputChange}
+                required
+                error={serviceError}
+              >
+                {calendarList.map((calendar) => (
+                  <MenuItem key={calendar.id} value={calendar.id}>
+                    {calendar.id}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Date"
                 name="date"
                 value={date}
                 onChange={(newValue) => {
-                  setDate(dayjs(newValue).format("YYYY-MM-DD").toString());
+                  setDate(dayjs(newValue));
                 }}
                 error={dateError}
-                helperText={dateError ? "Date is required" : ""}
               />
             </LocalizationProvider>
             <FormControl fullWidth>
@@ -130,9 +147,6 @@ const AddCalendarDate = () => {
                 name="exceptionType"
                 onChange={handleInputChange}
                 error={exceptionTypeError}
-                helperText={
-                  exceptionTypeError ? "Exception type is required" : ""
-                }
               >
                 <MenuItem value="a">Added</MenuItem>
                 <MenuItem value="r">Removed</MenuItem>

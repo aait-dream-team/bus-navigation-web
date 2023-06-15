@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
@@ -12,12 +12,47 @@ import {
   MenuItem,
 } from "@mui/material";
 import Header from "components/Header";
-import { usePatchTripMutation } from "state/api";
+import {
+  usePatchTripMutation,
+  useListOfAgenciesQuery,
+  useListOfRoutesQuery,
+  useListOfShapesQuery,
+} from "state/api";
 import { enqueueSnackbar } from "notistack";
 
 const EditTripModal = ({ row, rows, setRows, closeModal }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+
+  // dropdown list of agencies
+  const { data: rawAgencyList, isLoading: isAgencyListLoading } =
+    useListOfAgenciesQuery();
+  const [agencyList, setAgencyList] = useState([]);
+  useEffect(() => {
+    if (rawAgencyList) {
+      setAgencyList(rawAgencyList);
+    }
+  }, [rawAgencyList]);
+
+  // dropdown list of routes
+  const { data: rawRouteList, isLoading: isRouteListLoading } =
+    useListOfRoutesQuery();
+  const [routeList, setRouteList] = useState([]);
+  useEffect(() => {
+    if (rawRouteList) {
+      setRouteList(rawRouteList);
+    }
+  }, [rawRouteList]);
+
+  // dropdown list of shapes
+  const { data: rawShapeList, isLoading: isShapeListLoading } =
+    useListOfShapesQuery();
+  const [shapeList, setShapeList] = useState([]);
+  useEffect(() => {
+    if (rawShapeList) {
+      setShapeList(rawShapeList);
+    }
+  }, [rawShapeList]);
 
   const [headsign, setHeadsign] = useState(row.headsign);
   const [shortName, setShortName] = useState(row.short_name);
@@ -108,24 +143,54 @@ const EditTripModal = ({ row, rows, setRows, closeModal }) => {
                 <MenuItem value="false">Inbound</MenuItem>
               </Select>
             </FormControl>
-            <TextField
-              label="Agency Id"
-              value={agency}
-              onChange={(event) => setAgency(event.target.value)}
-              required
-            />
-            <TextField
-              label="Route Id"
-              value={route}
-              onChange={(event) => setRoute(event.target.value)}
-              required
-            />
-            <TextField
-              label="Shape Id"
-              value={shape}
-              onChange={(event) => setShape(event.target.value)}
-              required
-            />
+            <FormControl>
+              <InputLabel>Agency</InputLabel>
+              <Select
+                name="agency"
+                label="Agency"
+                value={agency}
+                onChange={(event) => setAgency(event.target.value)}
+                required
+              >
+                {agencyList.map((agency) => (
+                  <MenuItem key={agency.id} value={agency.id}>
+                    {agency.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl>
+              <InputLabel>Route</InputLabel>
+              <Select
+                name="route"
+                label="Route"
+                value={route}
+                onChange={(event) => setRoute(event.target.value)}
+                required
+              >
+                {routeList.map((route) => (
+                  <MenuItem key={route.id} value={route.id}>
+                    {route.route_short_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl>
+              <InputLabel>Shape</InputLabel>
+              <Select
+                name="shape"
+                label="Shape"
+                value={shape}
+                onChange={(event) => setShape(event.target.value)}
+                required
+              >
+                {shapeList.map((shape) => (
+                  <MenuItem key={shape.id} value={shape.id}>
+                    {shape.id}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
           <Box display="grid" justifyContent="center" gap={2} mt="2rem">
             <Button
