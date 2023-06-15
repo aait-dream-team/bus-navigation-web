@@ -28,7 +28,7 @@ const AddCalendarDate = () => {
   const [calendarList, setCalendarList] = useState([]);
   useEffect(() => {
     if (rawCalendarList) {
-      setCalendarList(rawCalendarList);
+      setCalendarList(rawCalendarList.results || []);
     }
   }, [rawCalendarList]);
 

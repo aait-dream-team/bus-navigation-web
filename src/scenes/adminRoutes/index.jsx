@@ -18,7 +18,8 @@ import { enqueueSnackbar } from "notistack";
 
 const AdminRoutes = () => {
   const theme = useTheme();
-  const { data, isLoading } = useListOfRoutesQuery();
+  const [page, setPage] = useState(0);
+  const { data, isLoading, refetch } = useListOfRoutesQuery({ page: page + 1 });
   const [deleteRouteTrigger, result] = useDeleteRouteMutation();
   const [rows, setRows] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -28,7 +29,7 @@ const AdminRoutes = () => {
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    setRows(data || []);
+    setRows(data?.results || []);
   }, [data]);
 
   const columns = [
@@ -91,7 +92,7 @@ const AdminRoutes = () => {
             size="small"
             onClick={(item) => {
               deleteRouteTrigger({ id: params.id });
-              setRows(data.filter((obj) => obj.id !== params.id));
+              setRows(rows.filter((obj) => obj.id !== params.id));
               enqueueSnackbar("Route deleted successfully!", {
                 variant: "success",
               });
@@ -172,6 +173,12 @@ const AdminRoutes = () => {
               getRowId={(row) => row.id}
               rows={rows || []}
               columns={columns}
+              rowCount={(data && data.count) || 0}
+              paginationModel={{ page, pageSize: 100 }}
+              paginationMode="server"
+              onPaginationModelChange={({ page }) => {
+                setPage(page);
+              }}
             />
           )}
         </Box>

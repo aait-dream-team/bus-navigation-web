@@ -28,7 +28,7 @@ const EditCalendarDateModal = ({ row, rows, setRows, closeModal }) => {
     const [calendarList, setCalendarList] = useState([]);
     useEffect(() => {
       if (rawCalendarList) {
-        setCalendarList(rawCalendarList);
+        setCalendarList(rawCalendarList?.results || []);
       }
     }, [rawCalendarList]);
 

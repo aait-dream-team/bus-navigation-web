@@ -34,7 +34,7 @@ const AddStopTime = () => {
   const [agencyList, setAgencyList] = useState([]);
   useEffect(() => {
     if (rawAgencyList) {
-      setAgencyList(rawAgencyList);
+      setAgencyList(rawAgencyList.results || []);
     }
   }, [rawAgencyList]);
 
@@ -44,7 +44,7 @@ const AddStopTime = () => {
   const [tripList, setTripList] = useState([]);
   useEffect(() => {
     if (rawTripList) {
-      setTripList(rawTripList);
+      setTripList(rawTripList.results || []);
     }
   }, [rawTripList]);
 
@@ -53,7 +53,7 @@ const AddStopTime = () => {
   const [stopList, setStopList] = useState([]);
   useEffect(() => {
     if (rawStops) {
-      setStopList(rawStops);
+      setStopList(rawStops.results || []);
     }
   }, [rawStops]);
 
@@ -261,7 +261,7 @@ const AddStopTime = () => {
                 {
                   tripList.map((trip) => (
                     <MenuItem key={trip.id} value={trip.id}>
-                      {trip.short_name}
+                      {trip.headsign}
                     </MenuItem>
                   ))
                 }

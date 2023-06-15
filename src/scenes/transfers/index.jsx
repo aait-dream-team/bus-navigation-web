@@ -17,7 +17,8 @@ import { enqueueSnackbar } from "notistack";
 
 const Transfers = () => {
   const theme = useTheme();
-  const { data, isLoading } = useListTransfersQuery();
+  const [page, setPage] = useState(0);
+  const { data, isLoading, refetch } = useListTransfersQuery({ page: page + 1});
   const [deleteTransferTrigger, result] = useDeleteTransferMutation();
   const [rows, setRows] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -27,7 +28,7 @@ const Transfers = () => {
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    setRows(data || []);
+    setRows(data?.results || []);
   }, [data]);
 
   const columns = [
@@ -85,7 +86,7 @@ const Transfers = () => {
             size="small"
             onClick={(item) => {
               deleteTransferTrigger({ id: params.id });
-              setRows(data.filter((obj) => obj.id !== params.id));
+              setRows(rows.filter((obj) => obj.id !== params.id));
               enqueueSnackbar("Transfer deleted successfully!", {
                 variant: "success",
               });
@@ -163,10 +164,16 @@ const Transfers = () => {
             </Container>
           ) : (
             <DataGrid
-              loading={isLoading || !data}
+              loading={isLoading}
               getRowId={(row) => row.id}
               rows={rows || []}
               columns={columns}
+              rowCount={(data && data.count) || 0}
+              paginationModel={{ page, pageSize: 100 }}
+              paginationMode="server"
+              onPaginationModelChange={({ page }) => {
+                setPage(page);
+              }}
             />
           )}
         </Box>

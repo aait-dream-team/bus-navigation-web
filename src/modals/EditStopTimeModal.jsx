@@ -34,7 +34,7 @@ const EditStopTimeModal = ({ row, rows, setRows, closeModal }) => {
   const [agencyList, setAgencyList] = useState([]);
   useEffect(() => {
     if (rawAgencyList) {
-      setAgencyList(rawAgencyList);
+      setAgencyList(rawAgencyList?.results || []);
     }
   }, [rawAgencyList]);
 
@@ -44,7 +44,7 @@ const EditStopTimeModal = ({ row, rows, setRows, closeModal }) => {
   const [tripList, setTripList] = useState([]);
   useEffect(() => {
     if (rawTripList) {
-      setTripList(rawTripList);
+      setTripList(rawTripList?.results || []);
     }
   }, [rawTripList]);
 
@@ -53,7 +53,7 @@ const EditStopTimeModal = ({ row, rows, setRows, closeModal }) => {
   const [stopList, setStopList] = useState([]);
   useEffect(() => {
     if (rawStops) {
-      setStopList(rawStops);
+      setStopList(rawStops?.results || []);
     }
   }, [rawStops]);
 

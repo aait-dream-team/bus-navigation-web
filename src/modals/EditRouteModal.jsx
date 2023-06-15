@@ -24,7 +24,7 @@ const EditRouteModal = ({ row, rows, setRows, closeModal }) => {
     const [agencyList, setAgencyList] = useState([]);
     useEffect(() => {
       if (rowAgencyList) {
-        setAgencyList(rowAgencyList);
+        setAgencyList(rowAgencyList?.results || []);
       }
     }, [rowAgencyList]);
 

@@ -14,7 +14,8 @@ import { useListOfRoutesQuery } from "state/api";
 
 const SuperAdminRoutes = () => {
   const theme = useTheme();
-  const { data, isLoading } = useListOfRoutesQuery();
+  const [page, setPage] = React.useState(0);
+  const { data, isLoading, refetch } = useListOfRoutesQuery({ page: page + 1 });
 
   const columns = [
     {
@@ -72,7 +73,6 @@ const SuperAdminRoutes = () => {
           },
           "& .MuiDataGrid-virtualScroller": {
             backgroundColor: theme.palette.primary.light,
-            
           },
           "& .MuiDataGrid-footerContainer": {
             backgroundColor: theme.palette.background.alt,
@@ -100,8 +100,14 @@ const SuperAdminRoutes = () => {
           <DataGrid
             loading={isLoading}
             getRowId={(row) => row.id}
-            rows={data || []}
+            rows={data?.results || []}
             columns={columns}
+            rowCount={(data && data.count) || 0}
+            paginationModel={{ page, pageSize: 100 }}
+            paginationMode="server"
+            onPaginationModelChange={({ page }) => {
+              setPage(page);
+            }}
           />
         )}
       </Box>

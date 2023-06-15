@@ -15,12 +15,13 @@ import { enqueueSnackbar } from "notistack";
 
 const Network = () => {
   const theme = useTheme();
-  const { data, isLoading } = useListOfAgenciesQuery();
+  const [page, setPage] = useState(0);
+  const { data, isLoading, refetch } = useListOfAgenciesQuery({ page: page + 1});
   const [deleteNetworkTrigger, result] = useDeleteAgencyMutation();
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    setRows(data || []);
+    setRows(data?.results || []);
   }, [data]);
 
   const columns = [
@@ -71,7 +72,7 @@ const Network = () => {
             size="small"
             onClick={(item) => {
               deleteNetworkTrigger({ id: params.id });
-              setRows(data.filter((obj) => obj.id !== params.id));
+              setRows(rows.filter((obj) => obj.id !== params.id));
               enqueueSnackbar("Network successfully deleted!", {
                 variant: "error",
               });
@@ -133,11 +134,17 @@ const Network = () => {
           </Container>
         ) : (
           <DataGrid
-            loading={isLoading || !data}
-            getRowId={(row) => row.id}
-            rows={rows || []}
-            columns={columns}
-          />
+              loading={isLoading}
+              getRowId={(row) => row.id}
+              rows={rows || []}
+              columns={columns}
+              rowCount={(data && data.count) || 0}
+              paginationModel={{ page, pageSize: 100 }}
+              paginationMode="server"
+              onPaginationModelChange={({ page }) => {
+                setPage(page);
+              }}
+            />
         )}
       </Box>
     </Box>

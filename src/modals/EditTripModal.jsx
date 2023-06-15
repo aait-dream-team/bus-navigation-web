@@ -30,7 +30,7 @@ const EditTripModal = ({ row, rows, setRows, closeModal }) => {
   const [agencyList, setAgencyList] = useState([]);
   useEffect(() => {
     if (rawAgencyList) {
-      setAgencyList(rawAgencyList);
+      setAgencyList(rawAgencyList?.results || []);
     }
   }, [rawAgencyList]);
 
@@ -40,7 +40,7 @@ const EditTripModal = ({ row, rows, setRows, closeModal }) => {
   const [routeList, setRouteList] = useState([]);
   useEffect(() => {
     if (rawRouteList) {
-      setRouteList(rawRouteList);
+      setRouteList(rawRouteList?.results || []);
     }
   }, [rawRouteList]);
 
@@ -50,7 +50,7 @@ const EditTripModal = ({ row, rows, setRows, closeModal }) => {
   const [shapeList, setShapeList] = useState([]);
   useEffect(() => {
     if (rawShapeList) {
-      setShapeList(rawShapeList);
+      setShapeList(rawShapeList?.results || []);
     }
   }, [rawShapeList]);
 

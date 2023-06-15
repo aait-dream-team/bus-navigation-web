@@ -17,7 +17,8 @@ import { enqueueSnackbar } from "notistack";
 
 const Calendar = () => {
   const theme = useTheme();
-  const { data, isLoading } = useListCalendarQuery();
+  const [page, setPage] = useState(0);
+  const { data, isLoading, refetch } = useListCalendarQuery({ page: page + 1 });
   const [deleteCalendarTrigger, result] = useDeleteCalendarMutation();
   const [rows, setRows] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -27,7 +28,7 @@ const Calendar = () => {
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    setRows(data || []);
+    setRows(data?.results || []);
   }, [data]);
 
   const columns = [
@@ -120,8 +121,10 @@ const Calendar = () => {
             size="small"
             onClick={(item) => {
               deleteCalendarTrigger({ id: params.id });
-              setRows(data.filter((obj) => obj.id !== params.id));
-              enqueueSnackbar('Calendar deleted successfully!', { variant: 'success' })
+              setRows(rows.filter((obj) => obj.id !== params.id));
+              enqueueSnackbar("Calendar deleted successfully!", {
+                variant: "success",
+              });
             }}
           >
             Delete
@@ -170,7 +173,6 @@ const Calendar = () => {
             },
             "& .MuiDataGrid-virtualScroller": {
               backgroundColor: theme.palette.primary.light,
-              
             },
             "& .MuiDataGrid-footerContainer": {
               backgroundColor: theme.palette.background.alt,
@@ -196,10 +198,16 @@ const Calendar = () => {
             </Container>
           ) : (
             <DataGrid
-              loading={isLoading || !data}
+              loading={isLoading}
               getRowId={(row) => row.id}
               rows={rows || []}
               columns={columns}
+              rowCount={(data && data.count) || 0}
+              paginationModel={{ page, pageSize: 100 }}
+              paginationMode="server"
+              onPaginationModelChange={({ page }) => {
+                setPage(page);
+              }}
             />
           )}
         </Box>

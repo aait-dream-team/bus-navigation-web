@@ -29,7 +29,7 @@ const AddCalendar = () => {
     const [agencyList, setAgencyList] = useState([]);
     useEffect(() => {
       if (rowAgencyList) {
-        setAgencyList(rowAgencyList);
+        setAgencyList(rowAgencyList.results || []);
       }
     }, [rowAgencyList]);
 
