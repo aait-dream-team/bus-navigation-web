@@ -34,7 +34,7 @@ const Report = () => {
   const [agencyList, setAgencyList] = useState([]);
   useEffect(() => {
     if (rawAgencyList) {
-      setAgencyList(rawAgencyList);
+      setAgencyList(rawAgencyList.results || []);
     }
   }, [rawAgencyList]);
 
@@ -44,7 +44,7 @@ const Report = () => {
   const [routeList, setRouteList] = useState([]);
   useEffect(() => {
     if (rawRouteList) {
-      setRouteList(rawRouteList);
+      setRouteList(rawRouteList.results || []);
     }
   }, [rawRouteList]);
 
@@ -54,7 +54,7 @@ const Report = () => {
   const [tripList, setTripList] = useState([]);
   useEffect(() => {
     if (rawTripList) {
-      setTripList(rawTripList);
+      setTripList(rawTripList.results || []);
     }
   }, [rawTripList]);
 
@@ -312,7 +312,7 @@ const Report = () => {
                   >
                     {tripList.map((trip) => (
                       <MenuItem key={trip.id} value={trip.id}>
-                        {trip.short_name}
+                        {trip.headsign}
                       </MenuItem>
                     ))}
                   </Select>

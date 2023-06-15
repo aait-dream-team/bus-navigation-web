@@ -19,9 +19,10 @@ export const api = createApi({
       }),
     }),
     listOfRoutes: build.query({
-      query: () => ({
+      query: (params = { pages: 1 }) => ({
         url: "routes/",
         method: "GET",
+        params,
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -66,9 +67,10 @@ export const api = createApi({
       }),
     }),
     listOfAgencies: build.query({
-      query: () => ({
+      query: (params = { pages: 1 }) => ({
         url: "agencies/",
         method: "GET",
+        params,
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -94,9 +96,10 @@ export const api = createApi({
       }),
     }),
     listOfTerminals: build.query({
-      query: () => ({
+      query: (params = { pages: 1 }) => ({
         url: "stops/",
         method: "GET",
+        params,
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -152,9 +155,10 @@ export const api = createApi({
       }),
     }),
     ListCalendarDates: build.query({
-      query: () => ({
+      query: (params = { pages: 1 }) => ({
         url: "calendar_dates/",
         method: "GET",
+        params,
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -190,9 +194,10 @@ export const api = createApi({
       }),
     }),
     listCalendar: build.query({
-      query: () => ({
+      query: (params = { pages: 1 }) => ({
         url: "calendars/",
         method: "GET",
+        params,
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -228,9 +233,10 @@ export const api = createApi({
       }),
     }),
     listFares: build.query({
-      query: () => ({
+      query: (params = { pages: 1 }) => ({
         url: "fares/",
         method: "GET",
+        params,
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -266,9 +272,10 @@ export const api = createApi({
       }),
     }),
     listTransfers: build.query({
-      query: () => ({
+      query: (params = { pages: 1 }) => ({
         url: "transfers/",
         method: "GET",
+        params,
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -304,10 +311,10 @@ export const api = createApi({
       }),
     }),
     listTrips: build.query({
-      query: (data) => ({
+      query: (params = { page: 1 }) => ({
         url: "trips/",
         method: "GET",
-        body: data,
+        params,
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -357,10 +364,10 @@ export const api = createApi({
       }),
     }),
     listOfShapes: build.query({
-      query: (data) => ({
+      query: (params = { pages: 1 }) => ({
         url: "shapes/",
         method: "GET",
-        body: data,
+        params,
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
@@ -396,10 +403,10 @@ export const api = createApi({
       }),
     }),
     listOfStopTimes: build.query({
-      query: (data) => ({
+      query: (params = { pages: 1 }) => ({
         url: `stop_times/`,
         method: "GET",
-        body: data,
+        params,
         headers: {
           Authorization: `Token ${localStorage.getItem("token")}`,
         },

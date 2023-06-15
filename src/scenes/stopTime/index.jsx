@@ -18,7 +18,8 @@ import EditStopTimeModal from "modals/EditStopTimeModal";
 
 const StopTime = () => {
   const theme = useTheme();
-  const { data, isLoading } = useListOfStopTimesQuery();
+  const [page, setPage] = useState(0);
+  const { data, isLoading, refetch } = useListOfStopTimesQuery({ page: page + 1});
   const [deleteStoptimeTrigger, result] = useDeleteStopTimesMutation();
   const [rows, setRows] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -28,7 +29,7 @@ const StopTime = () => {
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    setRows(data || []);
+    setRows(data?.results || []);
   }, [data]);
 
   const columns = [
@@ -106,7 +107,7 @@ const StopTime = () => {
             size="small"
             onClick={(item) => {
               deleteStoptimeTrigger({ id: params.id });
-              setRows(data.filter((obj) => obj.id !== params.id));
+              setRows(rows.filter((obj) => obj.id !== params.id));
               enqueueSnackbar("StopTime deleted successfully!", {
                 variant: "success",
               });
@@ -185,8 +186,18 @@ const StopTime = () => {
             <DataGrid
               loading={isLoading}
               getRowId={(row) => row.id}
-              rows={rows || []}
+              rows={data?.results || []}
               columns={columns}
+              rowCount={(data && data.count) || 0}
+              rowsPerPageOptions={[100]}
+              pagination
+              page={page}
+              onPageChange={(newPage) => {
+                setPage(newPage);
+                console.log("refetch");
+                refetch();
+              }}
+              paginationMode="server"
             />
           )}
         </Box>

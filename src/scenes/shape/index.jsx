@@ -17,7 +17,8 @@ import EditShapeModal from "modals/EditShapeModal";
 
 const Shape = () => {
   const theme = useTheme();
-  const { data, isLoading } = useListOfShapesQuery();
+  const [page, setPage] = useState(0);
+  const { data, isLoading, refetch } = useListOfShapesQuery({ page: page + 1 });
   const [deleteShapeTrigger, { error }] = useDeleteShapeMutation();
   const [rows, setRows] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -27,7 +28,7 @@ const Shape = () => {
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    setRows(data || []);
+    setRows(data?.results || []);
   }, [data]);
 
   const columns = [
@@ -98,7 +99,7 @@ const Shape = () => {
                 );
                 return;
               }
-              setRows(data.filter((obj) => obj.id !== params.id));
+              setRows(rows.filter((obj) => obj.id !== params.id));
               enqueueSnackbar("Shape deleted successfully!", {
                 variant: "success",
               });
@@ -179,6 +180,12 @@ const Shape = () => {
               getRowId={(row) => row.id}
               rows={rows || []}
               columns={columns}
+              rowCount={(data && data.count) || 0}
+              paginationModel={{ page, pageSize: 100 }}
+              paginationMode="server"
+              onPaginationModelChange={({ page }) => {
+                setPage(page);
+              }}
             />
           )}
         </Box>

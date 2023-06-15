@@ -17,7 +17,8 @@ import { enqueueSnackbar } from "notistack";
 
 const Terminal = () => {
   const theme = useTheme();
-  const { data, isLoading } = useListOfTerminalsQuery();
+  const [page, setPage] = useState(0);
+  const { data, isLoading, refetch } = useListOfTerminalsQuery({ page: page + 1});
   const [deleteTerminalTrigger, result] = useDeleteTerminalMutation();
   const [rows, setRows] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -27,7 +28,7 @@ const Terminal = () => {
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    setRows(data || []);
+    setRows(data?.results || []);
   }, [data]);
 
   const columns = [
@@ -90,7 +91,7 @@ const Terminal = () => {
             size="small"
             onClick={(item) => {
               deleteTerminalTrigger({ id: params.id });
-              setRows(data.filter((obj) => obj.id !== params.id));
+              setRows(rows.filter((obj) => obj.id !== params.id));
               enqueueSnackbar('Terminal deleted successfully!', { variant: 'success' })
             }}
           >
@@ -170,6 +171,12 @@ const Terminal = () => {
               getRowId={(row) => row.id}
               rows={rows || []}
               columns={columns}
+              rowCount={(data && data.count) || 0}
+              paginationModel={{ page, pageSize: 100 }}
+              paginationMode="server"
+              onPaginationModelChange={({ page }) => {
+                setPage(page);
+              }}
             />
           )}
         </Box>

@@ -30,7 +30,7 @@ const AddTrip = () => {
   const [agencyList, setAgencyList] = useState([]);
   useEffect(() => {
     if (rawAgencyList) {
-      setAgencyList(rawAgencyList);
+      setAgencyList(rawAgencyList.results || []);
     }
   }, [rawAgencyList]);
 
@@ -40,7 +40,7 @@ const AddTrip = () => {
   const [routeList, setRouteList] = useState([]);
   useEffect(() => {
     if (rawRouteList) {
-      setRouteList(rawRouteList);
+      setRouteList(rawRouteList.results || []);
     }
   }, [rawRouteList]);
 
@@ -50,7 +50,7 @@ const AddTrip = () => {
   const [shapeList, setShapeList] = useState([]);
   useEffect(() => {
     if (rawShapeList) {
-      setShapeList(rawShapeList);
+      setShapeList(rawShapeList.results || []);
     }
   }, [rawShapeList]);
 
