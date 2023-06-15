@@ -1,13 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Box, Container, useTheme } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Box,
+  Container,
+  useTheme,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import Header from "components/Header";
-import { useCreateRouteMutation } from "state/api";
+import { useCreateRouteMutation, useListOfAgenciesQuery } from "state/api";
 import { enqueueSnackbar } from "notistack";
 
 const AddRoute = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+
+  // dropdown list of agencies
+  const { data: rowAgencyList, isLoading } = useListOfAgenciesQuery();
+  const [agencyList, setAgencyList] = useState([]);
+  useEffect(() => {
+    if (rowAgencyList) {
+      setAgencyList(rowAgencyList);
+    }
+  }, [rowAgencyList]);
 
   const [routeShortName, setRouteShortName] = useState("");
   const [routeShortNameError, setRouteShortNameError] = useState(false);
@@ -82,7 +101,7 @@ const AddRoute = () => {
         agency: agency,
       }).unwrap();
       navigate("/routes");
-      enqueueSnackbar("Route Successfully created!", { variant : "success"});
+      enqueueSnackbar("Route Successfully created!", { variant: "success" });
     } catch (e) {
       enqueueSnackbar("Error creating Route", { variant: "error" });
     }
@@ -155,15 +174,23 @@ const AddRoute = () => {
               error={routeColorError}
               helperText={routeColorError ? "Route color is required" : ""}
             />
-            <TextField
-              label="Agency ID"
-              name="agency"
-              value={agency}
-              onChange={handleInputChange}
-              required
-              error={agencyError}
-              helperText={agencyError ? "Agency ID is required" : ""}
-            />
+            <FormControl>
+              <InputLabel>Agency</InputLabel>
+              <Select
+                name="agency"
+                label="Agency"
+                value={agency}
+                onChange={handleInputChange}
+                required
+                error={agencyError}
+              >
+                {agencyList.map((agency) => (
+                  <MenuItem key={agency.id} value={agency.id}> 
+                    {agency.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
           <Container
             maxWidth="sm"

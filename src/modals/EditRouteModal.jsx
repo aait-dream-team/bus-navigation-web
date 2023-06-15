@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
@@ -6,15 +6,27 @@ import {
   Box,
   Container,
   useTheme,
-  Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import Header from "components/Header";
-import { usePatchRouteMutation } from "state/api";
+import { usePatchRouteMutation, useListOfAgenciesQuery } from "state/api";
 import { enqueueSnackbar } from "notistack";
 
 const EditRouteModal = ({ row, rows, setRows, closeModal }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+
+    // dropdown list of agencies
+    const { data: rowAgencyList, isLoading } = useListOfAgenciesQuery();
+    const [agencyList, setAgencyList] = useState([]);
+    useEffect(() => {
+      if (rowAgencyList) {
+        setAgencyList(rowAgencyList);
+      }
+    }, [rowAgencyList]);
 
   const [routeShortName, setRouteShortName] = useState(row.route_short_name);
   const [routeShortNameError, setRouteShortNameError] = useState(false);
@@ -177,15 +189,23 @@ const EditRouteModal = ({ row, rows, setRows, closeModal }) => {
               error={routeColorError}
               helperText={routeColorError ? "Route color is required" : ""}
             />
-            <TextField
-              label="Agency ID"
-              name="agency"
-              value={agency}
-              onChange={handleInputChange}
-              required
-              error={agencyError}
-              helperText={agencyError ? "Agency ID is required" : ""}
-            />
+            <FormControl>
+              <InputLabel>Agency</InputLabel>
+              <Select
+                name="agency"
+                label="Agency"
+                value={agency}
+                onChange={handleInputChange}
+                required
+                error={agencyError}
+              >
+                {agencyList.map((agency) => (
+                  <MenuItem key={agency.id} value={agency.id}> 
+                    {agency.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
           <Container
             maxWidth="sm"

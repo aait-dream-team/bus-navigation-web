@@ -1,8 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, useTheme, Box, Container } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Box,
+  Container,
+  useTheme,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import Header from "components/Header";
-import { useCreateStopTimeMutation } from "state/api";
+import {
+  useCreateStopTimeMutation,
+  useListOfAgenciesQuery,
+  useListTripsQuery,
+  useListOfTerminalsQuery,
+} from "state/api";
 import { enqueueSnackbar } from "notistack";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -12,6 +27,35 @@ import dayjs from "dayjs";
 const AddStopTime = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+
+  // dropdown list of agencies
+  const { data: rawAgencyList, isLoading: isAgencyListLoading } =
+    useListOfAgenciesQuery();
+  const [agencyList, setAgencyList] = useState([]);
+  useEffect(() => {
+    if (rawAgencyList) {
+      setAgencyList(rawAgencyList);
+    }
+  }, [rawAgencyList]);
+
+  // dropdown list of trips
+  const { data: rawTripList, isLoading: isTripListLoading } =
+    useListTripsQuery();
+  const [tripList, setTripList] = useState([]);
+  useEffect(() => {
+    if (rawTripList) {
+      setTripList(rawTripList);
+    }
+  }, [rawTripList]);
+
+  // dropdown list of terminals
+  const {data : rawStops, isLoading: isStopListLoading} = useListOfTerminalsQuery();
+  const [stopList, setStopList] = useState([]);
+  useEffect(() => {
+    if (rawStops) {
+      setStopList(rawStops);
+    }
+  }, [rawStops]);
 
   const [arrivalTime, setArrivalTime] = useState("");
   const [arrivalTimeError, setArrivalTimeError] = useState(false);
@@ -54,6 +98,7 @@ const AddStopTime = () => {
       setAgencyError(false);
     }
     if (name === "trip") {
+      console.log(name);
       setTrip(value);
       setTripError(false);
     }
@@ -163,7 +208,9 @@ const AddStopTime = () => {
                 }}
                 required
                 error={departureTimeError}
-                helperText={departureTimeError ? "Departure time is required" : ""}
+                helperText={
+                  departureTimeError ? "Departure time is required" : ""
+                }
               />
             </LocalizationProvider>
             <TextField
@@ -184,33 +231,61 @@ const AddStopTime = () => {
               error={stopHeadsignError}
               helperText={stopHeadsignError ? "stop headsign is required" : ""}
             />
-            <TextField
-              label="Agency Id"
-              name="agency"
-              value={agency}
-              onChange={handleInputChange}
-              required
-              error={agencyError}
-              helperText={agencyError ? "agency is required" : ""}
-            />
-            <TextField
-              label="Trip id"
-              name="trip"
-              value={trip}
-              onChange={handleInputChange}
-              required
-              error={tripError}
-              helperText={tripError ? "trip is required" : ""}
-            />
-            <TextField
-              label="Terminal Id"
-              name="stop"
-              value={stop}
-              onChange={handleInputChange}
-              required
-              error={stopError}
-              helperText={stopError ? "stop is required" : ""}
-            />
+            <FormControl>
+              <InputLabel>Agency</InputLabel>
+              <Select
+                name="agency"
+                label="Agency"
+                value={agency}
+                onChange={handleInputChange}
+                required
+                error={agencyError}
+              >
+                {agencyList.map((agency) => (
+                  <MenuItem key={agency.id} value={agency.id}>
+                    {agency.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl>
+              <InputLabel>Trip</InputLabel>
+              <Select
+                name="trip"
+                label="Trip"
+                value={trip}
+                onChange={handleInputChange}
+                required
+                error={tripError}
+              >
+                {
+                  tripList.map((trip) => (
+                    <MenuItem key={trip.id} value={trip.id}>
+                      {trip.short_name}
+                    </MenuItem>
+                  ))
+                }
+              </Select>
+            </FormControl>
+            <FormControl>
+              <InputLabel>Terminal</InputLabel>
+              <Select
+                name="stop"
+                label="stop"
+                value={stop}
+                onChange={handleInputChange}
+                required
+                error={stopError}
+              >
+                {
+                  stopList.map((stop) => (
+                    <MenuItem key={stop.id} value={stop.id}>
+                      {stop.stop_name}
+                    </MenuItem>
+                  ))
+                }
+              </Select>
+            </FormControl>
           </Box>
           <Box display="grid" justifyContent="center" gap={2} mt="2rem">
             <Button

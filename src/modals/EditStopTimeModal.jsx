@@ -1,25 +1,73 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, useTheme, Box, Container } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Box,
+  Container,
+  useTheme,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import Header from "components/Header";
-import { useUpdateStopTimeMutation } from "state/api";
+import {
+  useUpdateStopTimeMutation,
+  useListOfAgenciesQuery,
+  useListTripsQuery,
+  useListOfTerminalsQuery,
+} from "state/api";
 import { enqueueSnackbar } from "notistack";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import dayjs from "dayjs";
 
-const EditStopTimeModal = ({row, rows, setRows, closeModal}) => {
+const EditStopTimeModal = ({ row, rows, setRows, closeModal }) => {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const [arrivalTime, setArrivalTime] = useState(dayjs(row.arrival_time, "HH:mm"));
+    // dropdown list of agencies
+    const { data: rawAgencyList, isLoading: isAgencyListLoading } =
+    useListOfAgenciesQuery();
+  const [agencyList, setAgencyList] = useState([]);
+  useEffect(() => {
+    if (rawAgencyList) {
+      setAgencyList(rawAgencyList);
+    }
+  }, [rawAgencyList]);
+
+  // dropdown list of trips
+  const { data: rawTripList, isLoading: isTripListLoading } =
+    useListTripsQuery();
+  const [tripList, setTripList] = useState([]);
+  useEffect(() => {
+    if (rawTripList) {
+      setTripList(rawTripList);
+    }
+  }, [rawTripList]);
+
+  // dropdown list of terminals
+  const {data : rawStops, isLoading: isStopListLoading} = useListOfTerminalsQuery();
+  const [stopList, setStopList] = useState([]);
+  useEffect(() => {
+    if (rawStops) {
+      setStopList(rawStops);
+    }
+  }, [rawStops]);
+
+  const [arrivalTime, setArrivalTime] = useState(
+    dayjs(row.arrival_time, "HH:mm")
+  );
   const [arrivalTimeError, setArrivalTimeError] = useState(false);
-  const [departureTime, setDepartureTime] = useState(dayjs(row.arrival_time, "HH:mm"));
+  const [departureTime, setDepartureTime] = useState(
+    dayjs(row.arrival_time, "HH:mm")
+  );
   const [departureTimeError, setDepartureTimeError] = useState(false);
   const [stopSequence, setStopSequence] = useState(row.stop_sequence);
   const [stopSequenceError, setStopSequenceError] = useState(false);
-  const [stopHeadsign, setStopHeadsign] = useState( row.stop_headsign);
+  const [stopHeadsign, setStopHeadsign] = useState(row.stop_headsign);
   const [stopHeadsignError, setStopHeadsignError] = useState(false);
   const [agency, setAgency] = useState(row.agency);
   const [agencyError, setAgencyError] = useState(false);
@@ -96,30 +144,30 @@ const EditStopTimeModal = ({row, rows, setRows, closeModal}) => {
 
     let data = undefined;
     const newData = {
-        id : row.id,
-        arrival_time: arrivalTime.format("hh:mm"),
-        departure_time: departureTime.format("hh:mm"),
-        stop_sequence: stopSequence,
-        stop_headsign: stopHeadsign,
-        agency,
-        trip,
-        stop,
-      }
+      id: row.id,
+      arrival_time: arrivalTime.format("hh:mm"),
+      departure_time: departureTime.format("hh:mm"),
+      stop_sequence: stopSequence,
+      stop_headsign: stopHeadsign,
+      agency,
+      trip,
+      stop,
+    };
     try {
-        data = await trigger(newData).unwrap();
-        closeModal();
-        for (const item of rows) {
-          if (item.id === row.id) {
-            setRows([...rows.filter((item) => item.id !== row.id), newData]);
-            enqueueSnackbar("StopTime edited successfully.", {
-              variant: "success",
-            });
-            return;
-          }
+      data = await trigger(newData).unwrap();
+      closeModal();
+      for (const item of rows) {
+        if (item.id === row.id) {
+          setRows([...rows.filter((item) => item.id !== row.id), newData]);
+          enqueueSnackbar("StopTime edited successfully.", {
+            variant: "success",
+          });
+          return;
         }
-      } catch (e) {
-        enqueueSnackbar("Error Editing StopTime", { variant: "error" });
       }
+    } catch (e) {
+      enqueueSnackbar("Error Editing StopTime", { variant: "error" });
+    }
   };
 
   return (
@@ -196,33 +244,61 @@ const EditStopTimeModal = ({row, rows, setRows, closeModal}) => {
               error={stopHeadsignError}
               helperText={stopHeadsignError ? "stop headsign is required" : ""}
             />
-            <TextField
-              label="Agency Id"
-              name="agency"
-              value={agency}
-              onChange={handleInputChange}
-              required
-              error={agencyError}
-              helperText={agencyError ? "agency is required" : ""}
-            />
-            <TextField
-              label="Trip id"
-              name="trip"
-              value={trip}
-              onChange={handleInputChange}
-              required
-              error={tripError}
-              helperText={tripError ? "trip is required" : ""}
-            />
-            <TextField
-              label="Terminal Id"
-              name="stop"
-              value={stop}
-              onChange={handleInputChange}
-              required
-              error={stopError}
-              helperText={stopError ? "stop is required" : ""}
-            />
+             <FormControl>
+              <InputLabel>Agency</InputLabel>
+              <Select
+                name="agency"
+                label="Agency"
+                value={agency}
+                onChange={handleInputChange}
+                required
+                error={agencyError}
+              >
+                {agencyList.map((agency) => (
+                  <MenuItem key={agency.id} value={agency.id}>
+                    {agency.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl>
+              <InputLabel>Trip</InputLabel>
+              <Select
+                name="trip"
+                label="Trip"
+                value={trip}
+                onChange={handleInputChange}
+                required
+                error={tripError}
+              >
+                {
+                  tripList.map((trip) => (
+                    <MenuItem key={trip.id} value={trip.id}>
+                      {trip.short_name}
+                    </MenuItem>
+                  ))
+                }
+              </Select>
+            </FormControl>
+            <FormControl>
+              <InputLabel>Terminal</InputLabel>
+              <Select
+                name="stop"
+                label="stop"
+                value={stop}
+                onChange={handleInputChange}
+                required
+                error={stopError}
+              >
+                {
+                  stopList.map((stop) => (
+                    <MenuItem key={stop.id} value={stop.id}>
+                      {stop.stop_name}
+                    </MenuItem>
+                  ))
+                }
+              </Select>
+            </FormControl>
           </Box>
           <Box display="grid" justifyContent="center" gap={2} mt="2rem">
             <Button
